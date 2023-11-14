@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelancing Application</title>
+</head>
+<body>
+    <h1>Freelancing Application</h1>
+
+    <form id="jobPosterForm">
+        <label for="jobPosterAddress">Job Poster Ethereum Address:</label>
+        <input type="text" id="jobPosterAddress" required>
+
+        <label for="jobVerificationCode">Job Verification Code:</label>
+        <input type="text" id="jobVerificationCode" required>
+
+        <label for="jobVerificationFile">Upload Job Verification File:</label>
+        <input type="file" id="jobVerificationFile" accept=".txt" required>
+
+        <button type="button" onclick="submitJob()">Submit Job</button>
+    </form>
+
+    <script>
+        async function submitJob() {
+            const jobPosterAddress = document.getElementById('jobPosterAddress').value;
+            const jobVerificationCode = document.getElementById('jobVerificationCode').value;
+            const jobVerificationFileInput = document.getElementById('jobVerificationFile');
+            
+            if (!jobPosterAddress || !jobVerificationCode || !jobVerificationFileInput.files[0]) {
+                alert('Please fill in all the fields.');
+                return;
+            }
+
+            const jobVerificationFile = jobVerificationFileInput.files[0];
+            const fileReader = new FileReader();
+
+            fileReader.onload = async function (event) {
+                const jobVerificationFileContent = event.target.result;
+
+                // Use web3.js or any other library to interact with the smart contract
+                // Call the relevant smart contract methods with the entered data
+
+                console.log('Job Poster Address:', jobPosterAddress);
+                console.log('Job Verification Code:', jobVerificationCode);
+                console.log('Job Verification File Content:', jobVerificationFileContent);
+
+                // Example: You can call your contract methods here
+
+                // Reset the form after successful submission
+                document.getElementById('jobPosterForm').reset();
+            };
+
+            fileReader.readAsText(jobVerificationFile);
+        }
+    </script>
+</body>
+</html>
