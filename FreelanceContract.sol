@@ -10,12 +10,16 @@ contract FreelanceContract {
     string public jobVerificationCode;
     string public jobSolverWork;
 
-    enum ContractState { Created, JobPosted, WorkSubmitted, Verified, Completed }
+    uint256 public specifiedPaymentAmount;
+    bool public paymentReleased;
+
+    enum ContractState { Created, JobPosted, WorkSubmitted, Verified, PaymentDone }
     ContractState public contractState;
 
-    event JobPosted(address indexed jobPoster);
+    event JobPosted(address indexed jobPoster, uint256 amount);
     event WorkSubmitted(address indexed jobSolver);
     event VerificationCompleted(address indexed thirdParty);
+    event PaymentReleased(address indexed jobSolver, uint256 amount);
     event ContractCompleted(address indexed jobPoster, address indexed jobSolver, address indexed thirdParty);
 
     modifier onlyJobPoster() {
@@ -38,33 +42,43 @@ contract FreelanceContract {
         _;
     }
 
-    constructor(address _jobSolver, address _thirdParty) {
+    constructor(address _thirdParty) {
         jobPoster = msg.sender;
-        jobSolver = _jobSolver;
         thirdParty = _thirdParty;
         contractState = ContractState.Created;
+        paymentReleased = false;
     }
 
-    function postJob(string memory _verificationCode) external onlyJobPoster inState(ContractState.Created) {
+    function postJob(string memory _verificationCode, uint256 _amount) external onlyJobPoster inState(ContractState.Created) {
         jobVerificationCode = _verificationCode;
+        specifiedPaymentAmount = _amount;
         contractState = ContractState.JobPosted;
-        emit JobPosted(jobPoster);
+        emit JobPosted(jobPoster, specifiedPaymentAmount);
     }
 
     function submitWork(string memory _work) external onlyJobSolver inState(ContractState.JobPosted) {
         jobSolverWork = _work;
+        jobSolver = msg.sender;
         contractState = ContractState.WorkSubmitted;
         emit WorkSubmitted(jobSolver);
     }
 
     function verifyWork(string memory _verificationCode) external onlyThirdParty inState(ContractState.WorkSubmitted) {
-        require(keccak256(abi.encodePacked(_verificationCode)) == keccak256(abi.encodePacked(jobVerificationCode)), "Verification code mismatch");
+        require(keccak256(abi.encodePacked(_verificationCode)) == keccak256(abi.encodePacked(jobVerificationCode)), stateReverter());
         contractState = ContractState.Verified;
         emit VerificationCompleted(thirdParty);
     }
 
-    function completeContract() external onlyJobPoster inState(ContractState.Verified) {
-        contractState = ContractState.Completed;
-        emit ContractCompleted(jobPoster, jobSolver, thirdParty);
+    function stateReverter() internal returns (string memory){
+        contractState = ContractState.JobPosted;
+        return("Your submission does not meet the requirements...");
+    }
+
+    function paymentReleaser() external onlyJobPoster inState(ContractState.Verified) {
+        require(!paymentReleased, "Payment already released");
+        paymentReleased = true;
+        payable(jobSolver).transfer(specifiedPaymentAmount);
+        contractState = ContractState.PaymentDone;
+        emit PaymentReleased(jobSolver, specifiedPaymentAmount);
     }
 }
