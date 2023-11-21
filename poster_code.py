@@ -7,3 +7,4 @@ def code_returner():
         answer_code = "3ac71829"
     else:
         answer_code = "00000000"
+    return answer_code

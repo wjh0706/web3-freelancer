@@ -31,7 +31,9 @@ Steps :
 3. When the submit button is clicked, the postJob function is called BY THE CLIENT with all the relevant arguments and a verification code that the client only decides.
 4. The amount and job description input is sent to the server. The verification code is NOT sent to server (it is needed to ensure secure verification of job).
 5. All the contracts for which job is posted, are displayed on a different html file on a different url, which the job solver sees. In this html file, on every row, there is the contract address, a text box to take solution file url (text field), and a submit button.
-6. When the job solver clicks submit, the submitWork contract function is called by the job solver client only.
+6. When the job solver clicks submit, the submitWork contract function is called by the JOB SOLVER CLIENT ONLY.
 7. The server receives the solution url input from job solver. 
-8. The server then calls the verifyWork function.
+8. Third party will run the python functions, to get code, and call verifyWork.
+8. The server then calls the verifyWork function with verificationCode.
 9. On seeing the contract state change to Verified, the job poster client calls the paymentReleaser function.
+10. Third party releases the solution to the jobPoster on Web2.

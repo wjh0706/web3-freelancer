@@ -56,7 +56,7 @@ contract FreelanceContract {
         emit JobPosted(jobPoster, specifiedPaymentAmount);
     }
 
-    function submitWork(string memory _work) external onlyJobSolver inState(ContractState.JobPosted) {
+    function submitWork(string memory _work) external inState(ContractState.JobPosted) {
         jobSolverWork = _work;
         jobSolver = msg.sender;
         contractState = ContractState.WorkSubmitted;
