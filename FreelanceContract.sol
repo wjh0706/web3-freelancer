@@ -82,3 +82,4 @@ contract FreelanceContract {
         emit PaymentReleased(jobSolver, specifiedPaymentAmount);
     }
 }
+
