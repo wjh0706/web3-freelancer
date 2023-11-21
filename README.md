@@ -8,13 +8,8 @@ Make sure to update the Ethereum node URL, contract JSON file path, and adjust t
 Also, consider implementing proper error handling and security measures based on your use case.
 
 To create a complete web application, you'll need additional files such as a backend server to handle the interaction with the Ethereum blockchain, 
-a package.json file for managing dependencies, and potentially some CSS for styling. Below, I'll provide a basic example with a Node.js backend using Express.
+a package.json file for managing dependencies.
 
-Node.js Backend (server.js):
-
-Package.json:
-Create a file named package.json in your project root with the following content:
-json
 Run npm install in your terminal to install the required dependencies.
 
 CSS (style.css):
