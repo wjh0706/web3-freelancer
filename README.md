@@ -32,3 +32,24 @@ Steps :
 8. The server then calls the verifyWork function with verificationCode.
 9. On seeing the contract state change to Verified, the job poster client calls the paymentReleaser function.
 10. Third party releases the solution to the jobPoster on Web2.
+
+Note : All the addresses we'll be using are the default web3.eth.addresses addresses.
+
+What the server needs to do :
+
+1. Server deploys the web3 contract, with the address of the 3rd party verifier. 
+2. Show all the deployed empty contracts (without the jobs) on an html page. 
+3. Show the appropriate pages to both job poster and potential solvers.
+4. Checks both the submitted python files, runs the verification script, and calls the Contract function Verify with the verification code. (This will automatically update the contract state).
+5. Server needs to keep scanning the contract instances to see if any contract turns to state paid. 
+6. On detecting this, the server needs to send the submitted python file to the job poster. This can just be a link which the job poster html page now has.
+
+Addresses are public, with username and password.
+
+What will the clients do?
+
+1. Make all the web3 calls from the jobposter and jobsolver privately.
+2. Ensure that some things like the verification code do not go to server.
+
+Next meet : Nov 25th.
+Try to finish all these tasks by : 30th Nov.
