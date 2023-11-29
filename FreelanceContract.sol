@@ -42,11 +42,14 @@ contract FreelanceContract {
         _;
     }
 
-    constructor(address _thirdParty) {
+    constructor() {
         jobPoster = msg.sender;
-        thirdParty = _thirdParty;
         contractState = ContractState.Created;
         paymentReleased = false;
+    }
+
+    function setThirdParty(address _thirdParty) external {
+        thirdParty = _thirdParty;
     }
 
     function postJob(string memory _verificationCode, uint256 _amount) external onlyJobPoster inState(ContractState.Created) {
@@ -67,19 +70,16 @@ contract FreelanceContract {
         require(keccak256(abi.encodePacked(_verificationCode)) == keccak256(abi.encodePacked(jobVerificationCode)), stateReverter());
         contractState = ContractState.Verified;
         emit VerificationCompleted(thirdParty);
-    }
-
-    function stateReverter() internal returns (string memory){
-        contractState = ContractState.JobPosted;
-        return("Your submission does not meet the requirements...");
-    }
-
-    function paymentReleaser() external onlyJobPoster inState(ContractState.Verified) {
         require(!paymentReleased, "Payment already released");
         paymentReleased = true;
         payable(jobSolver).transfer(specifiedPaymentAmount);
         contractState = ContractState.PaymentDone;
         emit PaymentReleased(jobSolver, specifiedPaymentAmount);
+    }
+
+    function stateReverter() internal returns (string memory){
+        contractState = ContractState.JobPosted;
+        return("Your submission does not meet the requirements...");
     }
 }
 
