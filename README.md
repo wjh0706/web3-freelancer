@@ -1,5 +1,5 @@
 # web3-freelancer
-e6998-fa23
+An ethereum based platform for automated software development freelancing
 
 auth part: https://github.com/wjh0706/web3-auth
 
