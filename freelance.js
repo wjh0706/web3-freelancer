@@ -1,10 +1,9 @@
-// =================== CS251 DEX Project =================== // 
-//        @authors: Simon Tao '22, Mathew Hogan '22          //
+// =================== Freelancer Project =================== // 
+//        @authors: Akshay Iyer '24, Columbia University          //
 // ========================================================= //                  
 
 // sets up web3.js
 const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
-const balanceWei = await web3.eth.getBalance(accountAddress);
 
 
 
@@ -13,7 +12,7 @@ const balanceWei = await web3.eth.getBalance(accountAddress);
 // =============================================================================
 
 // TODO: Paste your freelance address and ABI here
-const freelance_abi = [
+const freelance_abi =  [
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -270,7 +269,7 @@ const freelance_abi = [
 		"type": "function"
 	}
 ];
-const freelance_address = '0xf5b48Ca1e39Cb3DcABa6901C1A5A1ABAb196E91f';                
+const freelance_address = '0x64713aD333329990f30e0988F969eb15f8440b5c';                
 const freelance_contract = new web3.eth.Contract(freelance_abi, freelance_address);
 
 
@@ -283,10 +282,12 @@ const freelance_contract = new web3.eth.Contract(freelance_abi, freelance_addres
 // Reading and understanding these should help you implement the below functions
 
 /*** INIT ***/
-async function init() {
+async function init(accounts) {
+    console.log(accounts[accounts.length - 1])
     await freelance_contract.methods.setThirdParty(accounts[accounts.length - 1]).send({
         from: web3.eth.defaultAccount,
         gas: 999999,});
+    console.log("initialisation successful");
 }
 
 // This is a log function, provided if you want to display things to the page instead of the
@@ -296,21 +297,16 @@ function log(description, obj) {
     $("#log").html($("#log").html() + description + ": " + JSON.stringify(obj, null, 2) + "\n\n");
 }
 
-// ============================================================
-//                    FUNCTIONS TO IMPLEMENT
-// ============================================================
 
-// Note: maxSlippagePct will be passed in as an int out of 100. 
-// Be sure to divide by 100 for your calculations.
-
-/*** ADD LIQUIDITY ***/
 async function post_job(verification_code, amountEth) {
     /** TODO: ADD YOUR CODE HERE **/
-    await freelance_contract.methods.postJob(verification_code, amountEth).send({
+    var uintValue = parseInt(amountEth, 10);
+    console.log(uintValue, verification_code, web3.eth.defaultAccount);
+    await freelance_contract.methods.postJob(verification_code, uintValue).send({
         from: web3.eth.defaultAccount,
-        value: amountEth,
+        value: uintValue,
         gas: 999999,});
-    log("Received payment", { AmountETH: amountEth});
+    console.log("Job posting successful");
 }
 
 /*** REMOVE LIQUIDITY ***/
@@ -319,23 +315,23 @@ async function solve_job() {
     await freelance_contract.methods.submitWork("Placeholder for work link").send({
         from: web3.eth.defaultAccount,
         gas: 999999,});
-    log("Submitted work", { WorkLink: "Placeholder for work link"});
-
+    console.log("Job submission successful");
 }
 
+
+
 async function verify_job() {
-    const fs = require('fs');
-    // Read the content of "code.json" synchronously
-    const fileContent = fs.readFileSync('verification_code.json', 'utf-8');
-    const verification_code = JSON.parse(fileContent);
+    //const fs = require('fs');
+    //const fileContent = fs.readFileSync('verification_code.json', 'utf-8');
+    //const verification_code = JSON.parse(fileContent);
+    const verification_code = {verification_code: "123da"};
     // Call the removeAllLiquidity function in the smart contract
     //console.log("not Removed All Liquidity");
-    console.log("hello I reached here successfully")
-    await exchange_contract.methods.verifyWork(verification_code["verification_code"]).send({
+    console.log("hello I reached here successfully", web3.eth.defaultAccount)
+    await freelance_contract.methods.verifyWork(verification_code["verification_code"]).send({
         from: web3.eth.defaultAccount,
         gas: 999999,});
-    console.log("Removed All Liquidity");
-    log("Removed All Liquidity");
+    console.log("Job verification successful");
 }
 
 // =============================================================================
@@ -349,16 +345,12 @@ async function verify_job() {
 
 web3.eth.getAccounts().then((response)=> {
     web3.eth.defaultAccount = response[0];
-    // Initialize the exchange
-    init();
-});
-
-
-// Allows switching between accounts in 'My Account'
-web3.eth.getAccounts().then((response)=>{
+    const accounts = response;
     var opts = response.map(function (a) { return '<option value="'+
             a.toLowerCase()+'">'+a.toLowerCase()+'</option>' });
     $(".account").html(opts);
+    // Initialize the exchange
+    init(accounts);
 });
 
 // This runs the 'swapETHForTokens' function when you click the button
@@ -380,39 +372,38 @@ $("#solve-job").click(function() {
 // This runs the 'addLiquidity' function when you click the button
 $("#verify-job").click(function() {
     web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-  verify_job().then((response)=>{
+    console.log($("#myaccount").val());
+    verify_job().then((response)=>{
         window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
     })
+    
 });
 
-// Fills in relevant parts of UI with your token and exchange name info:
-try {
-    const accounts = await web3.eth.getAccounts();
-    const balancesContainer = $("#account-balances");
-
-    // Clear previous content
-    balancesContainer.html('');
-
-    // Iterate through each account
-    for (const account of accounts) {
-      const balanceWei = await web3.eth.getBalance(account);
-
-      // Convert Wei to Ether
-      const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
-
-      // Create an HTML string for each account
-      const accountHtml = `<p>Account: ${account}, Balance: ${balanceEth} ETH</p>`;
-      
-      // Append the HTML string to the container
-      balancesContainer.append(accountHtml);
+async function fetchAccountBalances() {
+    // Fills in relevant parts of UI with your token and exchange name info:
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const balancesContainer = $("#account-balances");
+        // Clear previous content
+        balancesContainer.html('');
+        // Iterate through each account
+        for (const account of accounts) {
+            const balanceWei = await web3.eth.getBalance(account);
+            // Convert Wei to Ether
+            const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+            // Create an HTML string for each account
+            const accountHtml = `<p>Account: ${account}, Balance: ${balanceEth} ETH</p>`;
+            // Append the HTML string to the container
+            balancesContainer.append(accountHtml);
+        }
+        balancesContainer.append(`<p>Verifier: ${accounts[accounts.length-1]}</p>`);
+    } 
+    catch (error) {
+    console.error('Error fetching account balances:', error);
     }
-  } 
-catch (error) {
-console.error('Error fetching account balances:', error);
 }
-
+fetchAccountBalances();
 $("#post-job").html("Post your job");
 $("#solve-job").html("Solve your job");
 $("#verify-job").html("Verify submitted job");
-
 $("#title").html("Web3 Freelancer");
