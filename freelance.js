@@ -269,7 +269,7 @@ const freelance_abi =  [
 		"type": "function"
 	}
 ];
-const freelance_address = '0x8490bD24482A4670cA7BECAC2BF08913F541106E';                
+const freelance_address = '0xC914b72326Ba42633F8cd20a6F1909fE3CA041d3';                
 const freelance_contract = new web3.eth.Contract(freelance_abi, freelance_address);
 
 
@@ -321,10 +321,14 @@ async function solve_job() {
 
 
 async function verify_job() {
-    //const fs = require('fs');
-    //const fileContent = fs.readFileSync('verification_code.json', 'utf-8');
-    //const verification_code = JSON.parse(fileContent);
-    const verification_code = {verification_code: "123da"};
+	//get all the python submissions, and run them
+	//get a json file with the verification code
+	//read the json file
+    const fs = require('fs');
+    const fileContent = fs.readFileSync('verification_code.json', 'utf-8');
+    const verification_code = JSON.parse(fileContent);
+
+    //const verification_code = {verification_code: "123da"};
     // Call the removeAllLiquidity function in the smart contract
     //console.log("not Removed All Liquidity");
     console.log("hello I reached here successfully", web3.eth.defaultAccount)
