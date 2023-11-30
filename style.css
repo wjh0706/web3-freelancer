@@ -1,37 +1,63 @@
+/* style.css
+	Defines the style of index.js
+// =============================================================================
+//                    YOU DO NOT NEED TO EDIT THIS FILE
+// =============================================================================
+// if you want to have cooler battleship pictures, change boat.png in media/
+*/
+
 body {
-    font-family: 'Arial', sans-serif;
-    margin: 20px;
+ 	font-family: 'Source Sans Pro', 'Arial';
+	background-color:#EEE;
+	padding: 30px;
 }
-
-h1 {
-    color: #333;
+.main {
+	width: 50%;
 }
-
-form {
-    max-width: 400px;
-    margin-top: 20px;
+.panel {
+	position: absolute;
+	top: 20px;
+	width: 300px;
+	background-color: #CCC;
+	padding: 20px;
+}
+.panel_left {
+	left: 20px;
+}
+.panel_right {
+	right: 20px;
+}
+#all_users {
+	color: #666;
+}
+.wallet_addresses_panel {
+	position: absolute;
+	width: 300px;
+	height: 160px;
+	background-color: #CCC;
+	padding: 20px;
+	bottom: 10px;
+	right: 10px;
+	font-size: 10px;
+	opacity: 0.5;
+}
+#amount {
+	width: 140px;
 }
 
 label {
-    display: block;
-    margin-bottom: 8px;
+	display:block;
+	margin-bottom:10px;
 }
-
 input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 16px;
+	width: 280px;
+	padding: 10px;
+	margin-bottom: 10px;
 }
-
 button {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #45a049;
+	display: block;
+	margin: 30px 0;
+	padding: 15px 30px;
+	border: 1px solid #666;
+	background: #CCC;
 }

@@ -10,7 +10,7 @@ contract FreelanceContract {
     string public jobVerificationCode;
     string public jobSolverWork;
 
-    uint256 public specifiedPaymentAmount;
+    uint public specifiedPaymentAmount;
     bool public paymentReleased;
 
     enum ContractState { Created, JobPosted, WorkSubmitted, Verified, PaymentDone }
@@ -42,14 +42,17 @@ contract FreelanceContract {
         _;
     }
 
-    constructor(address _thirdParty) {
-        jobPoster = msg.sender;
-        thirdParty = _thirdParty;
+    constructor() {
         contractState = ContractState.Created;
         paymentReleased = false;
     }
 
-    function postJob(string memory _verificationCode, uint256 _amount) external onlyJobPoster inState(ContractState.Created) {
+    function setThirdParty(address _thirdParty) external {
+        thirdParty = _thirdParty;
+    }
+
+    function postJob(string memory _verificationCode, uint _amount) public payable inState(ContractState.Created) {
+        jobPoster = msg.sender;
         jobVerificationCode = _verificationCode;
         specifiedPaymentAmount = _amount;
         contractState = ContractState.JobPosted;
@@ -66,20 +69,16 @@ contract FreelanceContract {
     function verifyWork(string memory _verificationCode) external onlyThirdParty inState(ContractState.WorkSubmitted) {
         require(keccak256(abi.encodePacked(_verificationCode)) == keccak256(abi.encodePacked(jobVerificationCode)), stateReverter());
         contractState = ContractState.Verified;
-        emit VerificationCompleted(thirdParty);
-    }
-
-    function stateReverter() internal returns (string memory){
-        contractState = ContractState.JobPosted;
-        return("Your submission does not meet the requirements...");
-    }
-
-    function paymentReleaser() external onlyJobPoster inState(ContractState.Verified) {
         require(!paymentReleased, "Payment already released");
         paymentReleased = true;
         payable(jobSolver).transfer(specifiedPaymentAmount);
         contractState = ContractState.PaymentDone;
         emit PaymentReleased(jobSolver, specifiedPaymentAmount);
+    }
+
+    function stateReverter() internal returns (string memory){
+        contractState = ContractState.JobPosted;
+        return("Your submission does not meet the requirements...");
     }
 }
 
