@@ -10,7 +10,7 @@ contract FreelanceContract {
     string public jobVerificationCode;
     string public jobSolverWork;
 
-    uint256 public specifiedPaymentAmount;
+    uint public specifiedPaymentAmount;
     bool public paymentReleased;
 
     enum ContractState { Created, JobPosted, WorkSubmitted, Verified, PaymentDone }
@@ -43,7 +43,6 @@ contract FreelanceContract {
     }
 
     constructor() {
-        jobPoster = msg.sender;
         contractState = ContractState.Created;
         paymentReleased = false;
     }
@@ -52,7 +51,8 @@ contract FreelanceContract {
         thirdParty = _thirdParty;
     }
 
-    function postJob(string memory _verificationCode, uint256 _amount) external onlyJobPoster inState(ContractState.Created) {
+    function postJob(string memory _verificationCode, uint _amount) public payable inState(ContractState.Created) {
+        jobPoster = msg.sender;
         jobVerificationCode = _verificationCode;
         specifiedPaymentAmount = _amount;
         contractState = ContractState.JobPosted;
@@ -69,7 +69,6 @@ contract FreelanceContract {
     function verifyWork(string memory _verificationCode) external onlyThirdParty inState(ContractState.WorkSubmitted) {
         require(keccak256(abi.encodePacked(_verificationCode)) == keccak256(abi.encodePacked(jobVerificationCode)), stateReverter());
         contractState = ContractState.Verified;
-        emit VerificationCompleted(thirdParty);
         require(!paymentReleased, "Payment already released");
         paymentReleased = true;
         payable(jobSolver).transfer(specifiedPaymentAmount);

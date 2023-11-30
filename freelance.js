@@ -200,7 +200,7 @@ const freelance_abi =  [
 		],
 		"name": "postJob",
 		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -269,7 +269,7 @@ const freelance_abi =  [
 		"type": "function"
 	}
 ];
-const freelance_address = '0x64713aD333329990f30e0988F969eb15f8440b5c';                
+const freelance_address = '0x8490bD24482A4670cA7BECAC2BF08913F541106E';                
 const freelance_contract = new web3.eth.Contract(freelance_abi, freelance_address);
 
 
