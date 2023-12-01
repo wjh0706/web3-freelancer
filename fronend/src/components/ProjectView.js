@@ -16,6 +16,7 @@ import ProjectList from "./ProjectList";
 import ProjectEdit from "./ProjectEdit";
 import NewProject from "./NewProject";
 import SubmitProject from "./SubmitProject";
+import VerifyProject from "./VerifyProject";
 
 function ProjectView({ setTabValue, setisLogged }) {
   const [view, setView] = React.useState("projectList");
@@ -45,6 +46,10 @@ function ProjectView({ setTabValue, setisLogged }) {
       )}
             {view === "submitProject" && (
         <SubmitProject setView={setView} projectId={project.id}
+        />
+      )}
+                  {view === "verifyProject" && (
+        <VerifyProject setView={setView} projectId={project.id}
         />
       )}
     </>

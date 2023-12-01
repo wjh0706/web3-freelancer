@@ -18,6 +18,7 @@ import { projectNewRouter } from './src/projects/routes/new-project';
 import { projectIndexRouter } from './src/projects/routes/index-project';
 import { submitProjectRouter } from './src/projects/routes/submit-project';
 import { projectUpdateRouter } from './src/projects/routes/update-project';
+import { verifyProjectRouter } from './src/projects/routes/verify-project';
 
 const app = express();
 app.use(cors({
@@ -46,6 +47,7 @@ app.use(projectNewRouter);
 app.use(projectIndexRouter);
 app.use(submitProjectRouter);
 app.use(projectUpdateRouter);
+app.use(verifyProjectRouter);
 
 app.all('*', async () => {
     throw new NotFoundError();

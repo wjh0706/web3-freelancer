@@ -125,6 +125,11 @@ function ProjectCard({
     setView("submitProject");
   };
 
+  const handleVerify = () => {
+    setProject(value);
+    setView("verifyProject");
+  };
+
   // const handleDownload = () => {
   //   // If project status is not-started or error, start a new run
   //   if (
@@ -208,8 +213,15 @@ function ProjectCard({
         >
           {/*Edit button*/}
           <Grid item>
-            <Button variant="contained" onClick={handleEdit}>
-              Edit
+            <Button
+              variant="contained"
+              onClick={handleEdit}
+              disabled={
+                projectInfo.processStatus != "not-started" ||
+                projectInfo.creatorId != userId
+              }
+            >
+              Details
             </Button>
           </Grid>
           {/*Delete button (disabled when the project is running)*/}
@@ -217,7 +229,7 @@ function ProjectCard({
             <DeleteButton
               onDelete={handleDelete}
               marginVar={8}
-              isDisabled={projectInfo.processStatus === "running"}
+              isDisabled={projectInfo.creatorId != userId}
               deletedThing="project"
               size="medium"
               buttonName="Delete"
@@ -228,10 +240,23 @@ function ProjectCard({
             <Button
               variant="outlined"
               onClick={handleSubmit}
-              disabled={projectInfo.processStatus != "not-started" || projectInfo.creatorId === userId 
-              || projectInfo.verifierId === userId}
+              disabled={
+                projectInfo.processStatus != "not-started" ||
+                projectInfo.creatorId === userId ||
+                projectInfo.verifierId === userId
+              }
             >
-              {buttonName}
+              Submit Code
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleVerify}
+              disabled={
+                projectInfo.processStatus != "submitted" ||
+                projectInfo.verifierId != userId
+              }
+            >
+              Verify
             </Button>
           </Grid>
         </Grid>
