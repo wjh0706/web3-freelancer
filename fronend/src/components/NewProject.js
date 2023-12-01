@@ -25,6 +25,7 @@ const NewProject = ({ setView }) => {
     verifierEmail: '', // Replace with actual verifierId from authentication
     projectName: '',
     projectDescription: '',
+    linkOfVerCode:'',
     price: 0,
   });
 
@@ -77,6 +78,28 @@ const NewProject = ({ setView }) => {
           label="Verifier's Email"
           name="verifierEmail"
           value={formData.verifierEmail}
+          onChange={handleChange}
+          multiline
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          required
+        />
+        <TextField
+          label="Verification Code"
+          name="verificationcode"
+          value={formData.verificationcode}
+          onChange={handleChange}
+          multiline
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          required
+        />
+        <TextField
+          label="Link of the verification Code"
+          name="linkOfVerCode"
+          value={formData.linkOfVerCode}
           onChange={handleChange}
           multiline
           variant="outlined"

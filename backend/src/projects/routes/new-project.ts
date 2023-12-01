@@ -25,7 +25,7 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { projectName, verifierEmail,projectDescription,price } = req.body;
+    const { projectName, verifierEmail,projectDescription,price,verificationcode,linkOfVerCode } = req.body;
 
     const verifier = await User.findOne({
       email: verifierEmail,
@@ -48,6 +48,8 @@ router.post(
       creatorId: req.currentUser!.id,
       verifierId: verifier.id,
       price:price,
+      linkOfVerCode:linkOfVerCode,
+      verificationcode:verificationcode,
       projectDescription:projectDescription,
       createdAt: new Date(),
     });

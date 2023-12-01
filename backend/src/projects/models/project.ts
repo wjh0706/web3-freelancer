@@ -9,6 +9,8 @@ interface ProjectAttrs {
   verifierId: string;
   projectName: string;
   price: number;
+  verificationcode: string;
+  linkOfVerCode: string;
   projectDescription: String;
   createdAt: Date;
 }
@@ -22,6 +24,7 @@ interface ProjectDoc extends mongoose.Document {
   lastModifiedAt: Date;
   version: number;
   price: number;
+  verificationcode: string;
   processStatus: ProcessStatus;
   output_file: string; //FilesDoc;
 }
@@ -42,6 +45,14 @@ const projectSchema = new mongoose.Schema(
       required: true,
     },
     projectName: {
+      type: String,
+      required: true,
+    },
+    verificationcode: {
+      type: String,
+      required: true,
+    },
+    linkOfVerCode: {
       type: String,
       required: true,
     },
