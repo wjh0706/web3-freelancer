@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { app } from "../app";
 import { User } from "./auth/models/user-model";
+import { Project } from "./projects/models/project";
 
 const start = async () => {
     console.log('Backend Service is Starting...');
@@ -21,6 +22,7 @@ const start = async () => {
         await mongoose.connect(process.env.MONGO_URI);
         
         console.log('Connected to MongoDB');
+        await Project.deleteMany({});
         await User.deleteMany({});
         console.log('DB init');
         

@@ -16,7 +16,7 @@ import { UserRouter } from './src/auth/routes/auth-user';
 import { projectDeleteRouter } from './src/projects/routes/delete-project';
 import { projectNewRouter } from './src/projects/routes/new-project';
 import { projectIndexRouter } from './src/projects/routes/index-project';
-import { runProjectRouter } from './src/projects/routes/run-project';
+import { submitProjectRouter } from './src/projects/routes/submit-project';
 import { projectUpdateRouter } from './src/projects/routes/update-project';
 
 const app = express();
@@ -44,7 +44,7 @@ app.use(UserRouter);
 app.use(projectDeleteRouter);
 app.use(projectNewRouter);
 app.use(projectIndexRouter);
-app.use(runProjectRouter);
+app.use(submitProjectRouter);
 app.use(projectUpdateRouter);
 
 app.all('*', async () => {

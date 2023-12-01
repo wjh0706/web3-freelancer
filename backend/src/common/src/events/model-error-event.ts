@@ -1,10 +1,10 @@
-import { Subjects } from "./subjects";
+// import { Subjects } from "./subjects";
 
-export interface ModelErrorEvent {
-    subject: Subjects.ProcessFailed;
+// export interface ModelErrorEvent {
+//     subject: Subjects.ProcessFailed;
 
-    data: {
-        projectId: string,
-        errors: string[],
-    }
-}
+//     data: {
+//         projectId: string,
+//         errors: string[],
+//     }
+// }

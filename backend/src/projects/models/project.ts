@@ -18,6 +18,7 @@ interface ProjectAttrs {
 interface ProjectDoc extends mongoose.Document {
   creatorId: string;
   verifierId: string;
+  freelancerId: string;
   projectName: string;
   projectDescription: String;
   createdAt: Date;
@@ -44,6 +45,10 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    freelancerId: {
+        type: String,
+        required: false,
+      },
     projectName: {
       type: String,
       required: true,

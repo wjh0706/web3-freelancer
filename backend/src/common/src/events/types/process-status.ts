@@ -1,5 +1,5 @@
 export enum ProcessStatus {
-    Running = 'running',
+    Submitted = 'submitted',
     Completed = 'completed',
     Error = 'error',
     NotStarted = 'not-started'

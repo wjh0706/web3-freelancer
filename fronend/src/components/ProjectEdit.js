@@ -36,7 +36,7 @@ import SettingManager from "./SettingManager";
 const axios = require("axios").default;
 //You may want to change the path of the markdown file you want to dispaly in the Help dialog.
 const helpMarkDown =
-  "https://raw.githubusercontent.com/guisaez/comp523-volumetricCapture/main/README.md";
+  "https://raw.githubusercontent.com/wjh0706/web3-freelancer/main/README.md";
 
 function ProjectEdit({ setView, project, setProject, setisLogged, ...props }) {
   const [info, setInfo] = React.useState(project);

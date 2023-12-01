@@ -1,6 +1,6 @@
-import { requireAuth} from '../../common/src/middleware/require-auth';
-import { validateRequest} from '../../common/src/middleware/validate-request';
-import { BadRequestError} from '../../common/src/errors/bad-request-error';
+import { requireAuth } from "../../common/src/middleware/require-auth";
+import { validateRequest } from "../../common/src/middleware/validate-request";
+import { BadRequestError } from "../../common/src/errors/bad-request-error";
 
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
@@ -25,7 +25,14 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { projectName, verifierEmail,projectDescription,price,verificationcode,linkOfVerCode } = req.body;
+    const {
+      projectName,
+      verifierEmail,
+      projectDescription,
+      price,
+      verificationcode,
+      linkOfVerCode,
+    } = req.body;
 
     const verifier = await User.findOne({
       email: verifierEmail,
@@ -38,19 +45,17 @@ router.post(
     }
 
     if (verifier.id == req.currentUser!.id) {
-        throw new BadRequestError(
-          "Job creator cannnot be the verifier"
-        );
-      }
+      throw new BadRequestError("Job creator cannnot be the verifier");
+    }
 
     const project = Project.build({
       projectName: projectName,
       creatorId: req.currentUser!.id,
       verifierId: verifier.id,
-      price:price,
-      linkOfVerCode:linkOfVerCode,
-      verificationcode:verificationcode,
-      projectDescription:projectDescription,
+      price: price,
+      linkOfVerCode: linkOfVerCode,
+      verificationcode: verificationcode,
+      projectDescription: projectDescription,
       createdAt: new Date(),
     });
 

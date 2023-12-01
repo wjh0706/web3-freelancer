@@ -42,26 +42,45 @@ function ProjectCard({
   const [error, setError] = React.useState(false);
   const [buttonName, setButtonName] = React.useState("");
   const [projectInfo, setInfo] = React.useState({
-    // Initialize state with default values
+    creatorId: value.creatorId,
+    verifierId: value.verifierId,
     projectName: value.projectName,
-    userId: value.userId,
+    verificationcode: value.verificationcode,
+    linkOfVerCode: value.linkOfVerCode,
+    projectDescription: value.projectDescription,
     createdAt: value.createdAt,
     lastModifiedAt: value.lastModifiedAt,
     processStatus: value.processStatus,
     version: value.version,
+    price: value.price,
+    output_file: value.output_file,
+    id: value.id,
     zip_fileId: value.zip_fileId,
     extrinsic_fileId: value.extrinsic_fileId,
     intrinsic_fileId: value.intrinsic_fileId,
     output_fileId: value.output_fileId,
-    id: value.id,
   });
+  const [userId, setUserId] = React.useState("");
+  React.useEffect(() => {
+    axios({
+      method: "get",
+      url: "http://localhost:3001/api/auth/user/",
+      withCredentials: true,
+    })
+      .then((res) => {
+        setUserId(res.data.currentUser.id);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   // Use the useEffect hook to update buttonName when projectInfo.processStatus changes
   React.useEffect(() => {
     if (projectInfo.processStatus === "not-started") {
-      setButtonName("Run Model");
-    } else if (projectInfo.processStatus === "running") {
-      setButtonName("Running");
+      setButtonName("Submit Code");
+    } else if (projectInfo.processStatus === "sumitted") {
+      setButtonName("Verify");
     } else if (projectInfo.processStatus === "error") {
       setButtonName("Try Again");
       setError(true);
@@ -81,11 +100,13 @@ function ProjectCard({
     axios({
       method: "delete",
       url: "http://localhost:3001/api/projects/" + value.id,
+      withCredentials: true,
     })
       .then((res) => {
         axios({
           method: "get",
           url: "http://localhost:3001/api/projects/",
+          withCredentials: true,
         })
           .then((res) => {
             setNumProjects(res.data.projects);
@@ -99,65 +120,70 @@ function ProjectCard({
       });
   };
 
-  const handleDownload = () => {
-    // If project status is not-started or error, start a new run
-    if (
-      projectInfo.processStatus === "not-started" ||
-      projectInfo.processStatus === "error"
-    ) {
-      axios({
-        method: "post",
-        url: "http://localhost:3001/api/projects/run/" + value.id,
-      })
-        .then((res) => {
-          setInfo({
-            projectName: res.data.project.projectName,
-            userId: res.data.project.userId,
-            createdAt: res.data.project.createdAt,
-            lastModifiedAt: res.data.project.lastModifiedAt,
-            processStatus: res.data.project.processStatus,
-            version: res.data.project.version,
-            zip_fileId: res.data.project.zip_fileId,
-            extrinsic_fileId: res.data.project.extrinsic_fileId,
-            intrinsic_fileId: res.data.project.intrinsic_fileId,
-            output_fileId: res.data.project.output_fileId,
-            id: res.data.project.id,
-          });
-          setButtonName("Running");
-          setError(false);
-          setErrorMsg("");
-          axios({
-            method: "get",
-            url: "http://localhost:3001/api/projects/",
-          })
-            .then((res) => {
-              setNumProjects(res.data.projects);
-            })
-            .catch((err) => {});
-        }, [])
-        .catch(() => {
-          setError(true);
-          setErrorMsg("Failed! Please check the files!");
-        });
-    } else if (projectInfo.processStatus === "completed") {
-      // Download the output file
-      axios({
-        method: "get",
-        url: "http://localhost:3001/api/files/download/" + projectInfo.output_fileId.id,
-        responseType: "blob",
-      }).then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute(
-          "download",
-          projectInfo.projectName + "_" + projectInfo.output_fileId.name
-        );
-        document.body.appendChild(link);
-        link.click();
-      });
-    }
+  const handleSubmit = () => {
+    setProject(value);
+    setView("submitProject");
   };
+
+  // const handleDownload = () => {
+  //   // If project status is not-started or error, start a new run
+  //   if (
+  //     projectInfo.processStatus === "not-started" ||
+  //     projectInfo.processStatus === "error"
+  //   ) {
+  //     axios({
+  //       method: "post",
+  //       url: "http://localhost:3001/api/projects/run/" + value.id,
+  //     })
+  //       .then((res) => {
+  //         setInfo({
+  //           projectName: res.data.project.projectName,
+  //           userId: res.data.project.userId,
+  //           createdAt: res.data.project.createdAt,
+  //           lastModifiedAt: res.data.project.lastModifiedAt,
+  //           processStatus: res.data.project.processStatus,
+  //           version: res.data.project.version,
+  //           zip_fileId: res.data.project.zip_fileId,
+  //           extrinsic_fileId: res.data.project.extrinsic_fileId,
+  //           intrinsic_fileId: res.data.project.intrinsic_fileId,
+  //           output_fileId: res.data.project.output_fileId,
+  //           id: res.data.project.id,
+  //         });
+  //         setButtonName("Running");
+  //         setError(false);
+  //         setErrorMsg("");
+  //         axios({
+  //           method: "get",
+  //           url: "http://localhost:3001/api/projects/",
+  //         })
+  //           .then((res) => {
+  //             setNumProjects(res.data.projects);
+  //           })
+  //           .catch((err) => {});
+  //       }, [])
+  //       .catch(() => {
+  //         setError(true);
+  //         setErrorMsg("Failed! Please check the files!");
+  //       });
+  //   } else if (projectInfo.processStatus === "completed") {
+  //     // Download the output file
+  //     axios({
+  //       method: "get",
+  //       url: "http://localhost:3001/api/files/download/" + projectInfo.output_fileId.id,
+  //       responseType: "blob",
+  //     }).then((response) => {
+  //       const url = window.URL.createObjectURL(new Blob([response.data]));
+  //       const link = document.createElement("a");
+  //       link.href = url;
+  //       link.setAttribute(
+  //         "download",
+  //         projectInfo.projectName + "_" + projectInfo.output_fileId.name
+  //       );
+  //       document.body.appendChild(link);
+  //       link.click();
+  //     });
+  //   }
+  // };
   return (
     <Card style={{ height: "30%", width: "20%", margin: 16, padding: 10 }}>
       <CardContent>
@@ -201,14 +227,9 @@ function ProjectCard({
           <Grid item>
             <Button
               variant="outlined"
-              onClick={handleDownload}
-              disabled={
-                projectInfo.processStatus === "running" ||
-                (buttonName === "Run Model" &&
-                  (!projectInfo.zip_fileId ||
-                    !projectInfo.extrinsic_fileId ||
-                    !projectInfo.intrinsic_fileId))
-              }
+              onClick={handleSubmit}
+              disabled={projectInfo.processStatus != "not-started" || projectInfo.creatorId === userId 
+              || projectInfo.verifierId === userId}
             >
               {buttonName}
             </Button>

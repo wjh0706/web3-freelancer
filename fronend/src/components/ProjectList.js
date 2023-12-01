@@ -62,92 +62,10 @@ function ProjectList({ setView, setTabValue, setProject, ...props }) {
       });
   }, []);
 
-  // Define a handleChange function that updates the projectName state variable when the Input component changes
-  const handleChange = (type, event) => {
-    if (type === "projectName") {
-      setProjectName(event.target.value);
-    }
-  };
-
   // Define a handleAddProject function that creates a new project using a POST request to the '/api/projects/' endpoint
   // with a default project name if no project name is provided, and then generates a new multi-view configuration for the project
   const handleAddProject = () => {
-    // axios({
-    //   method: "post",
-    //   url: "http://localhost:3001/api/projects/",
-    //   data: {
-    //     projectName: projectName || "New Project",
-    //   },
-    // }).then((res) => {
-    //   setNumProjects([...numProjects, res.data]);
-    //   generateMultiViewConfig(res.data.id);
-    // });
     setView("newProject")
-  };
-
-  // Define a generateMultiViewConfig function that generates a new multi-view configuration for a given project id
-  const generateMultiViewConfig = (pid) => {
-    const data = {
-      task: "if_nerf",
-      gpus: [0],
-      parent_cfg: "configs/zju_mocap_exp/latent_xyzc_313.yaml",
-      train_dataset: {
-        data_root: "/app/src/data/" + pid + "/neural_input",
-        human: "custom",
-        ann_file: "/app/src/data/" + pid + "/neural_input/annots.npy",
-        split: "train",
-      },
-      test_dataset: {
-        data_root: "/app/src/data/" + pid + "/neural_input",
-        human: "custom",
-        ann_file: "/app/src/data/" + pid + "/neural_input/annots.npy",
-        split: "test",
-      },
-      train: {
-        epoch: 50,
-        num_workers: 6,
-        batch_size: 1,
-      },
-      test: {
-        batch_size: 1,
-      },
-      ratio: 0.5,
-      training_view: [0, 1, 2, 3],
-      num_train_frame: 20,
-      smpl: "smpl",
-      vertices: "vertices",
-      params: "params",
-      big_box: true,
-    }; // Convert data to YAML format
-    const yamlData = yaml.dump(data, {
-      indent: 2,
-      quotingType: "'",
-      forceQuotes: true,
-      flowLevel: 4,
-    });
-
-    // Create a new file object for the YAML data
-    const config_yaml = new File([yamlData], pid + "_default_config.yaml", {
-      type: "text/plain;charset=utf-8",
-    });
-
-    // Create a new form data object and append the file and type information
-    const formData = new FormData();
-    formData.append("file", config_yaml);
-    formData.append("type", "multi_view_config");
-
-    // Send a POST request to the server
-    const route = "/api/files/upload/" + pid;
-    axios
-      .post(route, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => {})
-      .catch((err) => {
-        console.error(err);
-      });
   };
 
   return (
@@ -156,15 +74,6 @@ function ProjectList({ setView, setTabValue, setProject, ...props }) {
         <div>
           <h3 style={{ margin: 16 }}>{"Welcome, " + email + "!"}</h3>
         </div>
-        <FormControl style={{ margin: 16 }}>
-          <InputLabel>Project Name</InputLabel>
-          <Input
-            value={projectName}
-            onChange={(e) => {
-              handleChange("projectName", e);
-            }}
-          />
-        </FormControl>
         <Button
           variant="contained"
           style={{

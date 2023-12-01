@@ -6,16 +6,16 @@ import { Project } from '../models/project';
 
 const router = express.Router();
 
-router.delete('/api/projects', requireAuth, async (req: Request, res: Response) => {
+// router.delete('/api/projects', requireAuth, async (req: Request, res: Response) => {
 
-    const deleted = await Project.deleteMany({
-        userId: req.currentUser!.id
-    })
+//     const deleted = await Project.deleteMany({
+//         userId: req.currentUser!.id
+//     })
 
-    console.log(deleted);
+//     console.log(deleted);
 
-    res.status(204).send({});
-})
+//     res.status(204).send({});
+// })
     
 router.delete('/api/projects/:id', requireAuth, async (req:Request, res: Response) => {
 
@@ -23,16 +23,17 @@ router.delete('/api/projects/:id', requireAuth, async (req:Request, res: Respons
         throw new BadRequestError('Invalid id');
     }
 
-    const deleted = await Project.findByIdAndDelete(req.params.id);
+    const deleted = await Project.findById(req.params.id);
 
     if(!deleted){
         throw new BadRequestError('Project not found');
     }
 
-    // new ProjectDeletedPublisher(natsWrapper.client).publish({
-    //     projectId:  deleted.id,
-    //     userId: deleted.userId
-    // });
+    if(req.currentUser!.id != deleted.creatorId){
+        throw new BadRequestError('You are not the creator of this project.');
+    }
+
+    await Project.findByIdAndDelete(req.params.id);
 
     res.status(204).send({});
 })

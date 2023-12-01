@@ -7,22 +7,29 @@ import { Project } from '../models/project';
 
 const router = express.Router();
 
-router.post('/api/projects/run/:projectId', requireAuth, async (req: Request, res: Response) => {
+router.put('/api/projects/submit/:projectId', requireAuth, async (req: Request, res: Response) => {
+    const {output_file} = req.body;
 
     if(!req.params.projectId || !mongoose.isObjectIdOrHexString(req.params.projectId)){
         throw new BadRequestError('Invalid Project Id');
     }
-    const project = await Project.findById(req.params.projectId).populate('zip_fileId').populate('extrinsic_fileId').populate('intrinsic_fileId').populate('multi_view_fileId');
+    const project = await Project.findById(req.params.projectId)
 
     if(!project){
         throw new BadRequestError('Invalid Project Id');
     }
 
-    project.set('processStatus', ProcessStatus.Running);
+    if(req.currentUser!.id == project.creatorId || req.currentUser!.id == project.verifierId){
+        throw new BadRequestError('You can not cubmit the work');
+    }
+
+    project.freelancerId = req.currentUser!.id
+    project.output_file = output_file
+    project.set('processStatus', ProcessStatus.Submitted);
 
     await project.save();
 
     res.send( { project });
 })
 
-export { router as runProjectRouter };
+export { router as submitProjectRouter };

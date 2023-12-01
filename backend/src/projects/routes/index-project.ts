@@ -19,11 +19,6 @@ router.get(
     if (!project) {
       throw new BadRequestError("Project Not Found");
     }
-
-    // project.populate('zip_fileId')
-    // project.populate('extrinsic_fileId')
-    // project.populate('intrinsic_fileId')
-    // project.populate('multi_view_fileId')
     project.populate("output_file");
 
     res.status(200).send({ project: project });
@@ -36,12 +31,6 @@ router.get(
   async (req: Request, res: Response) => {
     const projects = await Project.find({
     })
-      // .populate("zip_fileId")
-      // .populate("extrinsic_fileId")
-      // .populate("intrinsic_fileId")
-      // .populate("output_file")
-      // .populate("multi_view_fileId");
-
     res.status(200).send({ projects });
   }
 );
