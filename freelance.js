@@ -300,13 +300,31 @@ function log(description, obj) {
 
 async function post_job(verification_code, amountEth) {
     /** TODO: ADD YOUR CODE HERE **/
+
+	//uuid modules
+	const { v4: uuidv4 } = require('uuid');
+	const verificationCode = uuidv4();
+
+	// Save the verification code to a JSON file
+	const verificationCodeData = { verification_code: verificationCode };
+    fs.writeFileSync('verification_code.json', JSON.stringify(verificationCodeData, null, 4));
+
     var uintValue = parseInt(amountEth, 10);
+
+	// Log the info for debugging
     console.log(uintValue, verification_code, web3.eth.defaultAccount);
-    await freelance_contract.methods.postJob(verification_code, uintValue).send({
-        from: web3.eth.defaultAccount,
-        value: uintValue,
-        gas: 999999,});
-    console.log("Job posting successful");
+
+    // Proceed with posting the job using the smart contract
+    try {
+        await freelance_contract.methods.postJob(verificationCode, uintValue).send({
+            from: web3.eth.defaultAccount,
+            value: uintValue,
+            gas: 999999,
+        });
+        console.log("Job posting successful");
+    } catch (error) {
+        console.error("Error in posting job:", error);
+    }
 }
 
 /*** REMOVE LIQUIDITY ***/
@@ -318,6 +336,32 @@ async function solve_job() {
     console.log("Job submission successful");
 }
 
+// this is a sample code that auto runs the python file and emit error if the file 
+// cannot be executed
+const { exec } = require('child_process');
+
+async function verifyPythonScript(filePath) {
+    return new Promise((resolve, reject) => {
+        exec(`python "${filePath}"`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Execution error for file ${filePath}: ${error}`);
+                return reject(error);
+            }
+            console.log(`Output for file ${filePath}: ${stdout}`);
+            resolve(stdout);
+        });
+    });
+}
+
+//this is a sample code that get files from directory
+function getFilesFromDirectory(directoryPath, fileExtension) {
+    let filesInDirectory = fs.readdirSync(directoryPath);
+    if (fileExtension) {
+        filesInDirectory = filesInDirectory.filter(file => path.extname(file).toLowerCase() === fileExtension);
+    }
+    return filesInDirectory.map(file => path.join(directoryPath, file));
+}
+
 
 
 async function verify_job() {
@@ -325,8 +369,28 @@ async function verify_job() {
 	//get a json file with the verification code
 	//read the json file
     const fs = require('fs');
+
+	//get python files
+	// Specify the directory path and file extension
+    const directoryPath = './Submissions';
+    const fileExtension = '.py';
+	const pythonFiles = getFilesFromDirectory(directoryPath, fileExtension);
+
+	//check if executable
+	for (const filePath of pythonFiles) {
+        try {
+            // Call the mock verification method
+            const result = await verifyPythonScript(filePath);
+            console.log(`Verification successful for file: ${filePath}`);
+            // Additional logic based on successful verification
+        } catch (error) {
+            console.error(`Verification failed for file: ${filePath}`);
+            // Handle verification failure
+        }
+    }
+
     const fileContent = fs.readFileSync('verification_code.json', 'utf-8');
-    const verification_code = JSON.parse(fileContent);
+    const verification_code = JSON.parse(fileContent).verification_code;
 
     //const verification_code = {verification_code: "123da"};
     // Call the removeAllLiquidity function in the smart contract
@@ -357,7 +421,7 @@ web3.eth.getAccounts().then((response)=> {
     init(accounts);
 });
 
-// This runs the 'swapETHForTokens' function when you click the button
+
 $("#post-job").click(function() {
     web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
   post_job($("#verification-code").val(), $("#job-amt").val()).then((response)=>{
@@ -365,7 +429,7 @@ $("#post-job").click(function() {
     })
 });
 
-// This runs the 'swapTokensForETH' function when you click the button
+
 $("#solve-job").click(function() {
     web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
   solve_job().then((response)=>{
@@ -373,7 +437,7 @@ $("#solve-job").click(function() {
     })
 });
 
-// This runs the 'addLiquidity' function when you click the button
+
 $("#verify-job").click(function() {
     web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
     console.log($("#myaccount").val());
