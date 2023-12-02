@@ -1,14 +1,11 @@
 # syntax=docker/dockerfile:1
-FROM node:alpine
+FROM node:21
 
 WORKDIR /app
 
-ENV JWT_KEY=eplanner_auth
+#RUN apt-get update && apt-get install -y git
 
-# # ENCRYPT_KEY must be 256 bits (32 bytes) long
-# ENV ENCRYPT_KEY=a6d597de8e9486cbcb79852775523593da8dcc918bb66c772ac1973235725055
-
-# ENV VERIFY_KEY=verify_email_address
+ENV JWT_KEY=freelancerweb3
 
 ENV BACKEND=http://localhost:3001
 
@@ -20,5 +17,12 @@ EXPOSE 3001
 
 COPY . . 
 
-CMD ["npm", "start"]
+# RUN cd src/contract
 
+#RUN npm install -g truffle
+
+# RUN truffle migrate --network development
+
+# RUN cd ../..
+
+CMD ["npm", "start"]

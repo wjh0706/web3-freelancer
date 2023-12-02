@@ -1,9 +1,9 @@
 const express = require('express');
 const { Project } = require('../models/project');
 const mongoose = require('mongoose');
-const { requireAuth } = require('../../common/src/middleware/require-auth');
-const { validateRequest } = require('../../common/src/middleware/validate-request');
-const { BadRequestError } = require('../../common/src/errors/bad-request-error');
+const { requireAuth } = require('../../common/middleware/require-auth');
+const { validateRequest } = require('../../common/middleware/validate-request');
+const { BadRequestError } = require('../../common/errors/bad-request-error');
 const { body } = require('express-validator');
 
 const router = express.Router();

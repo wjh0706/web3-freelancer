@@ -3,9 +3,9 @@ const cors = require('cors');
 require('express-async-errors');
 const { json } = require('body-parser');
 const cookieSession = require('cookie-session');
-const { currentUser } = require('./src/common/src/middleware/current-user');
-const { errorHandler } = require('./src/common/src/middleware/error-handler');
-const { NotFoundError } = require('./src/common/src/errors/not-found-error');
+const { currentUser } = require('./src/common/middleware/current-user');
+const { errorHandler } = require('./src/common/middleware/error-handler');
+const { NotFoundError } = require('./src/common/errors/not-found-error');
 // Server endpoints import
 //auth
 const { SingUpRouter } = require('./src/auth/routes/auth-signup');
@@ -41,12 +41,12 @@ app.use(SingInRouter);
 app.use(SingOutRouter);
 app.use(UserRouter);
 // //proj
-// app.use(projectDeleteRouter);
-// app.use(projectNewRouter);
-// app.use(projectIndexRouter);
-// app.use(submitProjectRouter);
-// app.use(projectUpdateRouter);
-// app.use(verifyProjectRouter);
+app.use(projectDeleteRouter);
+app.use(projectNewRouter);
+app.use(projectIndexRouter);
+app.use(submitProjectRouter);
+app.use(projectUpdateRouter);
+app.use(verifyProjectRouter);
 
 app.all('*', async () => {
     throw new NotFoundError();

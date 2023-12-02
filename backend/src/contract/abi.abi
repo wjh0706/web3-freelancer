@@ -1,10 +1,4 @@
-//web3-lib.js
-const { Web3 } = require('web3');
-
-
-const web3 = new Web3(Web3.givenProvider || "http://ganache-cli:8545");
-
-const abi =  [
+[
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -260,14 +254,4 @@ const abi =  [
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}
-];
-
-const contractAddress = '0xC914b72326Ba42633F8cd20a6F1909fE3CA041d3';
-
-const contract = new web3.eth.Contract(abi, contractAddress);
-
-module.exports = {
-	web3,
-	abi,
-	contract,
-  };
+]

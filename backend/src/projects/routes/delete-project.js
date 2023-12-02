@@ -1,6 +1,6 @@
 const express = require('express');
-const { requireAuth } = require('../../common/src/middleware/require-auth');
-const { BadRequestError } = require('../../common/src/errors/bad-request-error');
+const { requireAuth } = require('../../common/middleware/require-auth');
+const { BadRequestError } = require('../../common/errors/bad-request-error');
 const { Project } = require('../models/project');
 
 const router = express.Router();

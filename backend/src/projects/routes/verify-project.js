@@ -1,7 +1,7 @@
 const express = require('express');
-const { ProcessStatus } = require('../../common/src/events/types/process-status');
-const { requireAuth } = require('../../common/src/middleware/require-auth');
-const { BadRequestError } = require('../../common/src/errors/bad-request-error');
+const { ProcessStatus } = require('../../common/process-status');
+const { requireAuth } = require('../../common/middleware/require-auth');
+const { BadRequestError } = require('../../common/errors/bad-request-error');
 const mongoose = require('mongoose');
 const { Project } = require('../models/project');
 

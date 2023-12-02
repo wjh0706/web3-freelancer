@@ -1,8 +1,8 @@
 const express = require('express');
 const { Project } = require('../models/project');
 const mongoose = require('mongoose');
-const { requireAuth } = require('../../common/src/middleware/require-auth');
-const { BadRequestError } = require('../../common/src/errors/bad-request-error');
+const { requireAuth } = require('../../common/middleware/require-auth');
+const { BadRequestError } = require('../../common/errors/bad-request-error');
 
 const router = express.Router();
 

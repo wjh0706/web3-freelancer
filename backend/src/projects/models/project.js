@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ProcessStatus } = require('../../common/src/events/types/process-status');
+const { ProcessStatus } = require('../../common/process-status');
 const { updateIfCurrentPlugin } = require('mongoose-update-if-current');
 
 module.exports.ProcessStatus = ProcessStatus;
@@ -22,7 +22,7 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    verificationcode: {
+    verificationCode: {
       type: String,
       required: true,
     },

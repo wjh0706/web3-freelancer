@@ -1,15 +1,17 @@
 const express = require('express');
-const { requireAuth } = require('../../common/src/middleware/require-auth');
-const { validateRequest } = require('../../common/src/middleware/validate-request');
-const { BadRequestError } = require('../../common/src/errors/bad-request-error');
+const { requireAuth } = require('../../common/middleware/require-auth');
+const { validateRequest } = require('../../common/middleware/validate-request');
+const { BadRequestError } = require('../../common/errors/bad-request-error');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const expressValidator = require('express-validator');
 const { Project } = require('../models/project');
 const { User } = require('../../auth/models/user-model');
+const { contract } = require('../../common/web3-lib');
+const contractAddress = fs.readFileSync('contract-address.txt').toString();
 
 const router = express.Router();
-
+console.log("posting on new proj:",contractAddress);
 router.post(
   '/api/projects',
   requireAuth,
@@ -31,9 +33,9 @@ router.post(
       verifierEmail,
       projectDescription,
       price,
-      verificationcode,
       linkOfVerCode,
     } = req.body;
+    const verificationCode = uuidv4();
 
     const verifier = await User.findOne({
       email: verifierEmail,
@@ -55,40 +57,43 @@ router.post(
       verifierId: verifier.id,
       price: price,
       linkOfVerCode: linkOfVerCode,
-      verificationcode: verificationcode,
+      verificationCode: verificationCode,
       projectDescription: projectDescription,
       createdAt: new Date(),
     });
 
     await project.save();
 
-    // const verificationCode = uuidv4();
+    
+    // Save the verification code to a JSON file
+    const verificationCodeData = { verification_code: verificationCode };
+    fs.writeFileSync(
+      "verification_code.json",
+      JSON.stringify(verificationCodeData, null, 4)
+    );
 
-    // // Save the verification code to a JSON file
-    // const verificationCodeData = { verification_code: verificationCode };
-    // fs.writeFileSync(
-    //   "verification_code.json",
-    //   JSON.stringify(verificationCodeData, null, 4)
-    // );
+    const uintValue = parseInt(price, 10);
 
-    // const uintValue = parseInt(price, 10);
+    // Log the info for debugging
+    console.log(uintValue, verificationCode, req.currentUser.address);
+    console.log("posting on:",contractAddress);
+    // Proceed with posting the job using the smart contract
+    try {
+      await contract.methods.setThirdParty(verifier.address).send({
+        from: req.currentUser.address,
+        gas: 999999,});
 
-    // // Log the info for debugging
-    // console.log(uintValue, verificationcode, web3.eth.defaultAccount);
-
-    // // Proceed with posting the job using the smart contract
-    // try {
-    //   await contract.methods
-    //     .postJob(verificationCode, uintValue)
-    //     .send({
-    //       from: web3.eth.defaultAccount,
-    //       value: uintValue,
-    //       gas: 999999,
-    //     });
-    //   console.log("Job posting successful");
-    // } catch (error) {
-    //   console.error("Error in posting job:", error);
-    // }
+      await contract.methods
+        .postJob(verificationCode, uintValue)
+        .send({
+          from: req.currentUser.address,
+          value: uintValue,
+          gas: 999999,
+        });
+      console.log("Job posting successful");
+    } catch (error) {
+      console.error("Error in posting job:", error);
+    }
 
     res.status(201).send(project);
   }

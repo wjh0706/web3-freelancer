@@ -1,12 +1,12 @@
 const express = require("express");
 const { body } = require("express-validator");
-const { validateRequest } = require("../../common/src/middleware/validate-request");
-const { BadRequestError } = require("../../common/src/errors/bad-request-error");
+const { validateRequest } = require("../../common/middleware/validate-request");
+const { BadRequestError } = require("../../common/errors/bad-request-error");
 const { User } = require("../models/user-model");
 const jwt = require("jsonwebtoken");
 const Web3 = require("web3");
-// const { web3 } = require("../../common/src/events/types/web3.js");
-const { web3 } = require('../../common/src/events/types/web3-lib');
+// const { web3 } = require("../../common/web3.js");
+const { web3 } = require('../../common/web3-lib');
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const { currentUser } = require('../../common/src/middleware/current-user');
+const { currentUser } = require('../../common/middleware/current-user');
 
 const router = express.Router();
 
