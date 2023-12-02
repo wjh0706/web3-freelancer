@@ -45,18 +45,12 @@ const fs = require("fs");
 
 const bytecode = fs.readFileSync("./src/contract/bytecode.bin").toString();
 const abi = JSON.parse(fs.readFileSync("./src/contract/abi.abi"));
-const contractAddress = fs.readFileSync('contract-address.txt').toString();
-
-console.log("Read Contract Address:", contractAddress);
 
 const web3 = new Web3(Web3.givenProvider || "http://ganache-cli:8545");
-const contract = new web3.eth.Contract(abi, contractAddress);
 
 module.exports = {
   web3:web3,
   bytecode,
   abi,
-  contract,
-  contractAddress:contractAddress,
-  //deploy,
+  accounts:web3.eth.getAccounts()
 };

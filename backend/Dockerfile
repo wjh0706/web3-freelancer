@@ -25,4 +25,7 @@ COPY . .
 
 # RUN cd ../..
 
-CMD ["npm", "start"]
+#CMD ["npm", "start"]
+RUN chmod +x wait-for-ganache.sh
+
+CMD ["./wait-for-ganache.sh", "http://ganache-cli:8545", "--", "npm", "start"]

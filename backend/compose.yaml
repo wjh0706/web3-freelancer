@@ -23,8 +23,9 @@ services:
     ports:
       - 3001:3001 # Choose a port that's available on your machine
     depends_on:
-      - backend-mongo
       - ganache-cli
+      - backend-mongo
+      
     networks:
       - mynetwork
 

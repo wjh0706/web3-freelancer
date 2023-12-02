@@ -45,7 +45,9 @@
 // const { MNEMONIC, PROJECT_ID } = process.env;
 
 // const HDWalletProvider = require('@truffle/hdwallet-provider');
+const fromAddress = process.env.FROM_ADDRESS || 'default from address';
 
+console.log("fromadd in config",fromAddress)
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -70,6 +72,7 @@ module.exports = {
       network_id: "*", // Any network (default: none)
       //gas: 10000, // Gas sent with each transaction (default: ~6700000)
       //gasPrice: 20000000000, // 20 gwei (in wei) (default: 100 gwei)
+      from:fromAddress,
     },
     //
     // An additional network, but with some advanced options…

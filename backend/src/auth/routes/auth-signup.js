@@ -4,22 +4,25 @@ const { validateRequest } = require("../../common/middleware/validate-request");
 const { BadRequestError } = require("../../common/errors/bad-request-error");
 const { User } = require("../models/user-model");
 const jwt = require("jsonwebtoken");
-const Web3 = require("web3");
+const {Web3} = require("web3");
 // const { web3 } = require("../../common/web3.js");
 const { web3 } = require('../../common/web3-lib');
-
+//const web3 = new Web3(Web3.givenProvider || "http://ganache-cli:8545");
 const router = express.Router();
-
 router.post(
   "/api/auth/signup",
   [
-    body("email").isEmail().withMessage("Email must be valid"), //,
+    body("email").isEmail().withMessage("Email must be valid"),
+    body("password").trim().notEmpty() //,
   ],
   validateRequest,
   async (req, res) => {
-    const { email } = req.body;
-    const account = await web3.eth.accounts.create();
-    const address = account.address;
+    const { email,password } = req.body;
+
+    console.log(await web3.eth.getAccounts());
+
+    const address = await web3.eth.personal.newAccount(password);
+    //const address = account.address;
 
     // check if Email is already in use.
     const userExists = await User.findOne({
@@ -37,12 +40,15 @@ router.post(
     });
 
     await user.save();
+    const accounts = await web3.eth.getAccounts();
+    console.log(accounts);
 
     // generate JWT token
     const JWT = jwt.sign(
       {
         id: user.id,
         email: user.email,
+        address: user.address,
       },
       process.env.JWT_KEY
     );
@@ -51,14 +57,12 @@ router.post(
       jwt: JWT,
     };
 
-    res
-      .status(201)
-      .send({
-        id: user.id,
-        email: user.email,
-        address: account.address,
-        privateKey: account.privateKey,
-      });
+    res.status(201).send({
+      id: user.id,
+      email: user.email,
+      address: address,//account.address,
+      //privateKey: account.privateKey,
+    });
   }
 );
 
@@ -108,6 +112,7 @@ router.post(
       {
         id: user.id,
         email: user.email,
+        address: user.address,
       },
       process.env.JWT_KEY
     );

@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const { app } = require("../app");
 const { User } = require("./auth/models/user-model");
 const { Project } = require("./projects/models/project");
-
+const { app } = require("../app");
 
 const start = async () => {
   console.log("Backend Service is Starting...");
