@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const { ProcessStatus } = require('../../common/process-status');
-const { updateIfCurrentPlugin } = require('mongoose-update-if-current');
+const mongoose = require("mongoose");
+const { ProcessStatus } = require("../../common/process-status");
+const { updateIfCurrentPlugin } = require("mongoose-update-if-current");
 
 module.exports.ProcessStatus = ProcessStatus;
 
@@ -26,9 +26,13 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // linkOfVerCode: {
+    //   type: String,
+    //   required: true,
+    // },
     linkOfVerCode: {
-      type: String,
-      required: true,
+      data: Buffer, // Buffer to store file content
+      contentType: String, // MIME type of the file
     },
     projectDescription: {
       type: String,
@@ -51,9 +55,13 @@ const projectSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    // output_file: {
+    //   type: String,
+    //   required: false,
+    // },
     output_file: {
-      type: String,
-      required: false,
+      data: Buffer, // Buffer to store file content
+      contentType: String, // MIME type of the file
     },
   },
   {
@@ -66,7 +74,7 @@ const projectSchema = new mongoose.Schema(
   }
 );
 
-projectSchema.set('versionKey', 'version');
+projectSchema.set("versionKey", "version");
 projectSchema.plugin(updateIfCurrentPlugin);
 
 projectSchema.statics.build = (attrs) => {
@@ -79,6 +87,6 @@ projectSchema.statics.findByEvent = (event) => {
   });
 };
 
-const Project = mongoose.model('Project', projectSchema);
+const Project = mongoose.model("Project", projectSchema);
 
-module.exports = { Project, ProjectDoc: Project };
+module.exports = { Project };

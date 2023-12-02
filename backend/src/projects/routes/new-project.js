@@ -14,21 +14,21 @@ const router = express.Router();
 router.post(
   "/api/projects",
   requireAuth,
-  [
-    expressValidator
-      .body("projectName")
-      .isString()
-      .isLength({
-        min: 1,
-      })
-      .not()
-      .isEmpty()
-      .withMessage("Project Name cannot be empty"),
-    expressValidator
-      .body("verifierEmail")
-      .isEmail()
-      .withMessage("Email must be valid"),
-  ],
+  // [
+  //   expressValidator
+  //     .body("projectName")
+  //     .isString()
+  //     .isLength({
+  //       min: 1,
+  //     })
+  //     .not()
+  //     .isEmpty()
+  //     .withMessage("Project Name cannot be empty"),
+  //   expressValidator
+  //     .body("verifierEmail")
+  //     .isEmail()
+  //     .withMessage("Email must be valid"),
+  // ],
   validateRequest,
   async (req, res) => {
     const {
@@ -36,8 +36,24 @@ router.post(
       verifierEmail,
       projectDescription,
       price,
-      linkOfVerCode,
-    } = req.body;
+      //linkOfVerCode,
+    } = JSON.parse(req.files.json_data[0].buffer.toString());
+    // const {
+    //   projectName,
+    //   verifierEmail,
+    //   projectDescription,
+    //   price,
+    //   //linkOfVerCode,
+    // } = req.body;
+
+    // Access file data from req.file
+    const fileData = req.file;
+    
+    // Check if a file was uploaded
+    if (!fileData) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
     const verificationCode = uuidv4();
 
     const verifier = await User.findOne({
@@ -68,7 +84,10 @@ router.post(
       creatorId: req.currentUser.id,
       verifierId: verifier.id,
       price: price,
-      linkOfVerCode: linkOfVerCode,
+      linkOfVerCode:{
+        data: fileData.buffer,
+        contentType: fileData.mimetype,
+      },
       contractAddress: contractAddress,
       projectDescription: projectDescription,
       createdAt: new Date(),

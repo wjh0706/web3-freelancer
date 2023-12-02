@@ -1,6 +1,9 @@
 # syntax=docker/dockerfile:1
 FROM node:21
 
+# Install Python
+RUN apt-get update && apt-get install -y python3
+
 WORKDIR /app
 
 #RUN apt-get update && apt-get install -y git
@@ -26,6 +29,8 @@ COPY . .
 # RUN cd ../..
 
 #CMD ["npm", "start"]
+RUN python3
+
 RUN chmod +x wait-for-ganache.sh
 
 CMD ["./wait-for-ganache.sh", "http://ganache-cli:8545", "--", "npm", "start"]
