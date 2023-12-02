@@ -269,7 +269,7 @@ const freelance_abi =  [
 		"type": "function"
 	}
 ];
-const freelance_address = '0xc303451bE8b26B36Ec250Cc70A989f8c36bDDe98';                
+const freelance_address = '0xab13B5DB25ADe75F2aca3113b0a3417e42188B76';                
 const freelance_contract = new web3.eth.Contract(freelance_abi, freelance_address);
 
 
@@ -303,19 +303,18 @@ async function post_job(verification_code, amountEth) {
     var uintValue = parseInt(amountEth, 10);
 
 	// Log the info for debugging
-    console.log(uintValue, verification_code, web3.eth.defaultAccount);
+    // console.log(uintValue, verification_code, web3.eth.defaultAccount);
 
     // Proceed with posting the job using the smart contract
-    try {
-        await freelance_contract.methods.postJob(verificationCode, uintValue).send({
-            from: web3.eth.defaultAccount,
-            value: uintValue,
-            gas: 999999,
-        });
-        console.log("Job posting successful");
-    } catch (error) {
-        console.error("Error in posting job:", error);
-    }
+    
+	await freelance_contract.methods.postJob(verification_code, uintValue).send({
+		from: web3.eth.defaultAccount,
+		value: uintValue,
+		gas: 999999,
+		type: "0x1",
+	});
+	console.log("Job posting successful");
+
 }
 
 /*** REMOVE LIQUIDITY ***/
@@ -323,7 +322,9 @@ async function solve_job() {
     /** TODO: ADD YOUR CODE HERE **/
     await freelance_contract.methods.submitWork("Placeholder for work link").send({
         from: web3.eth.defaultAccount,
-        gas: 999999,});
+        gas: 999999,
+		type: "0x1",
+	});
     console.log("Job submission successful");
 }
 
@@ -349,19 +350,18 @@ async function verify_job() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const data = await response.json();
+        const data = await response;
 		console.log("Response data:", data);
 
-        if (data.verified) {
-			console.log("Preparing to call verifyWork on smart contract");
-            await freelance_contract.methods.verifyWork("3ac71829").send({
-                from: web3.eth.defaultAccount,
-                gas: 999999,
-            });
-            console.log("Job verification successful");
-        } else {
-            console.log("Job verification failed");
-        }
+        
+		console.log("Preparing to call verifyWork on smart contract");
+		await freelance_contract.methods.verifyWork(data).send({
+			from: web3.eth.defaultAccount,
+			gas: 999999,
+			type: "0x1",
+		});
+		console.log("Job verification successful");
+        
     } catch (error) {
         console.error("Error in job verification:", error);
     }

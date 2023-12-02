@@ -22,11 +22,8 @@ app.post('/verify-job', (req, res) => {
         try {
             const fileContent = fs.readFileSync(path.join('verification_code.json'), 'utf-8');
             const verificationCode = JSON.parse(fileContent).verification_code;
-            if (verificationCode == "3ac71829") {
-                res.json({ verified: true });
-            } else {
-                res.json({ verified: false });
-            }
+            console.log(verificationCode);
+            res.send(verificationCode);
         } catch (jsonError) {
             res.status(500).send({ message: `Error reading the JSON file: ${jsonError}` });
         }
