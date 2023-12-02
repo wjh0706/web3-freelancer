@@ -30,6 +30,10 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // verificationCode: {
+    //   type: String,
+    //   required: false,
+    // },
     projectDescription: {
       type: String,
       required: false,

@@ -36,9 +36,10 @@ router.post(
       verifierEmail,
       projectDescription,
       price,
+      verificationCode,
       linkOfVerCode,
     } = req.body;
-    const verificationCode = uuidv4();
+    // const verificationCode = uuidv4();
 
     const verifier = await User.findOne({
       email: verifierEmail,
@@ -77,11 +78,11 @@ router.post(
     await project.save();
 
     // Save the verification code to a JSON file
-    const verificationCodeData = { verification_code: verificationCode };
-    fs.writeFileSync(
-      "verification_code.json",
-      JSON.stringify(verificationCodeData, null, 4)
-    );
+    // const verificationCodeData = { verification_code: verificationCode };
+    // fs.writeFileSync(
+    //   "verification_code.json",
+    //   JSON.stringify(verificationCodeData, null, 4)
+    // );
 
     const uintValue = parseInt(price, 10);
 

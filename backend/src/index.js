@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { User } = require("./auth/models/user-model");
 const { Project } = require("./projects/models/project");
 const { app } = require("../app");
+const { web3 } = require("./common/web3-lib");
 
 const start = async () => {
   console.log("Backend Service is Starting...");
@@ -22,6 +23,16 @@ const start = async () => {
     console.log("Connected to MongoDB");
     await Project.deleteMany({});
     await User.deleteMany({});
+    const accounts = await web3.eth.getAccounts();
+    for (var i = 0; i < accounts.length; i++) {
+      const user = User.build({
+        email:"test"+i.toString()+"@email.com",
+        address:accounts[i],
+      });
+
+      await user.save();
+    }
+
     console.log("DB init");
   } catch (err) {
     //throw new DatabaseConnectionError();
