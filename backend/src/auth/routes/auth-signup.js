@@ -1,15 +1,14 @@
-import express from "express";
-import { Request, Response } from "express";
-import { body } from "express-validator";
-import { validateRequest} from '../../common/src/middleware/validate-request';
-import { BadRequestError} from '../../common/src/errors/bad-request-error';
-import { User } from "../models/user-model";
-import jwt from "jsonwebtoken";
-import Web3 from "web3";
+const express = require("express");
+const { body } = require("express-validator");
+const { validateRequest } = require("../../common/src/middleware/validate-request");
+const { BadRequestError } = require("../../common/src/errors/bad-request-error");
+const { User } = require("../models/user-model");
+const jwt = require("jsonwebtoken");
+const Web3 = require("web3");
+// const { web3 } = require("../../common/src/events/types/web3.js");
+const { web3 } = require('../../common/src/events/types/web3-lib');
 
 const router = express.Router();
-
-const web3 = new Web3(Web3.givenProvider || "http://ganache-cli:8545");
 
 router.post(
   "/api/auth/signup",
@@ -17,10 +16,9 @@ router.post(
     body("email").isEmail().withMessage("Email must be valid"), //,
   ],
   validateRequest,
-  async (req: Request, res: Response) => {
+  async (req, res) => {
     const { email } = req.body;
     const account = await web3.eth.accounts.create();
-    //const address = accounts[userCount]
     const address = account.address;
 
     // check if Email is already in use.
@@ -35,7 +33,6 @@ router.post(
     // build new user
     const user = User.build({
       email,
-      //password,
       address,
     });
 
@@ -47,7 +44,7 @@ router.post(
         id: user.id,
         email: user.email,
       },
-      process.env.JWT_KEY!
+      process.env.JWT_KEY
     );
 
     req.session = {
@@ -72,12 +69,12 @@ router.post(
     body("address").not().isEmpty(),
   ],
   validateRequest,
-  async (req: Request, res: Response) => {
+  async (req, res) => {
     const { email, address } = req.body;
     const accounts = await web3.eth.getAccounts();
     if (!accounts.includes(address)) {
       throw new BadRequestError(
-        "Account with the adress does not exist on the blockchain"
+        "Account with the address does not exist on the blockchain"
       );
     }
 
@@ -101,7 +98,6 @@ router.post(
     // build new user
     const user = User.build({
       email,
-      //password,
       address,
     });
 
@@ -113,7 +109,7 @@ router.post(
         id: user.id,
         email: user.email,
       },
-      process.env.JWT_KEY!
+      process.env.JWT_KEY
     );
 
     req.session = {
@@ -123,4 +119,4 @@ router.post(
   }
 );
 
-export { router as SingUpRouter };
+module.exports = { SingUpRouter: router };

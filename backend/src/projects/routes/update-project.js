@@ -1,10 +1,10 @@
-import express, { Request, Response } from 'express';
-import { Project } from '../models/project';
-import mongoose from 'mongoose';
-import { requireAuth} from '../../common/src/middleware/require-auth';
-import { validateRequest} from '../../common/src/middleware/validate-request';
-import { BadRequestError} from '../../common/src/errors/bad-request-error';
-import { body } from 'express-validator';
+const express = require('express');
+const { Project } = require('../models/project');
+const mongoose = require('mongoose');
+const { requireAuth } = require('../../common/src/middleware/require-auth');
+const { validateRequest } = require('../../common/src/middleware/validate-request');
+const { BadRequestError } = require('../../common/src/errors/bad-request-error');
+const { body } = require('express-validator');
 
 const router = express.Router();
 
@@ -17,8 +17,8 @@ router.patch('/api/projects/:id', requireAuth, [
     .not()
     .isEmpty()
     .withMessage('Project Name cannot be empty')
-], validateRequest, async (req: Request, res: Response) => {
-  if (!mongoose.isObjectIdOrHexString(req.params.id)) {
+], validateRequest, async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
     throw new BadRequestError('Invalid Project Id');
   }
 
@@ -37,6 +37,6 @@ router.patch('/api/projects/:id', requireAuth, [
   }
 
   res.status(200).send(updatedProject);
-})
+});
 
-export { router as projectUpdateRouter };
+module.exports = { projectUpdateRouter: router };
