@@ -269,7 +269,7 @@ const freelance_abi =  [
 		"type": "function"
 	}
 ];
-const freelance_address = '0xC914b72326Ba42633F8cd20a6F1909fE3CA041d3';                
+const freelance_address = '0xc303451bE8b26B36Ec250Cc70A989f8c36bDDe98';                
 const freelance_contract = new web3.eth.Contract(freelance_abi, freelance_address);
 
 
@@ -299,15 +299,6 @@ function log(description, obj) {
 
 
 async function post_job(verification_code, amountEth) {
-    /** TODO: ADD YOUR CODE HERE **/
-
-	//uuid modules
-	const { v4: uuidv4 } = require('uuid');
-	const verificationCode = uuidv4();
-
-	// Save the verification code to a JSON file
-	const verificationCodeData = { verification_code: verificationCode };
-    fs.writeFileSync('verification_code.json', JSON.stringify(verificationCodeData, null, 4));
 
     var uintValue = parseInt(amountEth, 10);
 
@@ -336,70 +327,44 @@ async function solve_job() {
     console.log("Job submission successful");
 }
 
-// this is a sample code that auto runs the python file and emit error if the file 
-// cannot be executed
-const { exec } = require('child_process');
-
-async function verifyPythonScript(filePath) {
-    return new Promise((resolve, reject) => {
-        exec(`python "${filePath}"`, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Execution error for file ${filePath}: ${error}`);
-                return reject(error);
-            }
-            console.log(`Output for file ${filePath}: ${stdout}`);
-            resolve(stdout);
-        });
-    });
-}
-
-//this is a sample code that get files from directory
-function getFilesFromDirectory(directoryPath, fileExtension) {
-    let filesInDirectory = fs.readdirSync(directoryPath);
-    if (fileExtension) {
-        filesInDirectory = filesInDirectory.filter(file => path.extname(file).toLowerCase() === fileExtension);
-    }
-    return filesInDirectory.map(file => path.join(directoryPath, file));
-}
-
-
 
 async function verify_job() {
 	//get all the python submissions, and run them
 	//get a json file with the verification code
 	//read the json file
-    const fs = require('fs');
-
-	//get python files
-	// Specify the directory path and file extension
-    const directoryPath = './Submissions';
-    const fileExtension = '.py';
-	const pythonFiles = getFilesFromDirectory(directoryPath, fileExtension);
-
-	//check if executable
-	for (const filePath of pythonFiles) {
-        try {
-            // Call the mock verification method
-            const result = await verifyPythonScript(filePath);
-            console.log(`Verification successful for file: ${filePath}`);
-            // Additional logic based on successful verification
-        } catch (error) {
-            console.error(`Verification failed for file: ${filePath}`);
-            // Handle verification failure
-        }
-    }
-
-    const fileContent = fs.readFileSync('verification_code.json', 'utf-8');
-    const verification_code = JSON.parse(fileContent).verification_code;
 
     //const verification_code = {verification_code: "123da"};
     // Call the removeAllLiquidity function in the smart contract
     //console.log("not Removed All Liquidity");
-    console.log("hello I reached here successfully", web3.eth.defaultAccount)
-    await freelance_contract.methods.verifyWork(verification_code["verification_code"]).send({
-        from: web3.eth.defaultAccount,
-        gas: 999999,});
-    console.log("Job verification successful");
+	console.log("Verify Job called");
+    try {
+        const response = await fetch('http://localhost:3000/verify-job', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+		console.log("Response data:", data);
+
+        if (data.verified) {
+			console.log("Preparing to call verifyWork on smart contract");
+            await freelance_contract.methods.verifyWork("3ac71829").send({
+                from: web3.eth.defaultAccount,
+                gas: 999999,
+            });
+            console.log("Job verification successful");
+        } else {
+            console.log("Job verification failed");
+        }
+    } catch (error) {
+        console.error("Error in job verification:", error);
+    }
 }
 
 // =============================================================================
@@ -442,7 +407,7 @@ $("#verify-job").click(function() {
     web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
     console.log($("#myaccount").val());
     verify_job().then((response)=>{
-        window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
+        // window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
     })
     
 });
