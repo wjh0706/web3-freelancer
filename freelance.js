@@ -14,11 +14,6 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 // TODO: Paste your freelance address and ABI here
 const freelance_abi =  [
 	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -109,6 +104,75 @@ const freelance_abi =  [
 	},
 	{
 		"inputs": [],
+		"name": "cancelJob",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_verificationCode",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "postJob",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_thirdParty",
+				"type": "address"
+			}
+		],
+		"name": "setThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_work",
+				"type": "string"
+			}
+		],
+		"name": "submitWork",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_verificationCode",
+				"type": "string"
+			}
+		],
+		"name": "verifyWork",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
 		"name": "contractState",
 		"outputs": [
 			{
@@ -186,37 +250,6 @@ const freelance_abi =  [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_verificationCode",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			}
-		],
-		"name": "postJob",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_thirdParty",
-				"type": "address"
-			}
-		],
-		"name": "setThirdParty",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "specifiedPaymentAmount",
 		"outputs": [
@@ -227,19 +260,6 @@ const freelance_abi =  [
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_work",
-				"type": "string"
-			}
-		],
-		"name": "submitWork",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -254,22 +274,9 @@ const freelance_abi =  [
 		],
 		"stateMutability": "view",
 		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_verificationCode",
-				"type": "string"
-			}
-		],
-		"name": "verifyWork",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	}
 ];
-const freelance_address = '0xab13B5DB25ADe75F2aca3113b0a3417e42188B76';                
+const freelance_address = '0x64160A86ACA91036C61E18812c1b72cA95a29b04';                
 const freelance_contract = new web3.eth.Contract(freelance_abi, freelance_address);
 
 
@@ -350,15 +357,15 @@ async function verify_job() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const data = await response;
-		console.log("Response data:", data);
+        const data = await response.json();
+
+		console.log("Response data:", data["verification_code"]);
 
         
 		console.log("Preparing to call verifyWork on smart contract");
-		await freelance_contract.methods.verifyWork(data).send({
+		await freelance_contract.methods.verifyWork(data["verification_code"]).send({
 			from: web3.eth.defaultAccount,
 			gas: 999999,
-			type: "0x1",
 		});
 		console.log("Job verification successful");
         

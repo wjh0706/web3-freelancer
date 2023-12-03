@@ -13,7 +13,7 @@ contract FreelanceContract {
     uint public specifiedPaymentAmount;
     bool public paymentReleased;
 
-    enum ContractState { Created, JobPosted, WorkSubmitted, Verified, PaymentDone }
+    enum ContractState { Created, JobPosted, Verified, PaymentDone }
     ContractState public contractState;
 
     event JobPosted(address indexed jobPoster, uint256 amount);
@@ -62,12 +62,11 @@ contract FreelanceContract {
     function submitWork(string memory _work) external inState(ContractState.JobPosted) {
         jobSolverWork = _work;
         jobSolver = msg.sender;
-        contractState = ContractState.WorkSubmitted;
         emit WorkSubmitted(jobSolver);
     }
 
-    function verifyWork(string memory _verificationCode) external onlyThirdParty inState(ContractState.WorkSubmitted) {
-        require(keccak256(abi.encodePacked(_verificationCode)) == keccak256(abi.encodePacked(jobVerificationCode)), stateReverter());
+    function verifyWork(string memory _verificationCode) external onlyThirdParty inState(ContractState.JobPosted) {
+        require(keccak256(abi.encodePacked(_verificationCode)) == keccak256(abi.encodePacked(jobVerificationCode)), "Your submission does not meet the requirements...");
         contractState = ContractState.Verified;
         require(!paymentReleased, "Payment already released");
         paymentReleased = true;
@@ -76,9 +75,13 @@ contract FreelanceContract {
         emit PaymentReleased(jobSolver, specifiedPaymentAmount);
     }
 
-    function stateReverter() internal returns (string memory){
-        contractState = ContractState.JobPosted;
-        return("Your submission does not meet the requirements...");
+    function cancelJob() public onlyJobPoster inState(ContractState.JobPosted) {
+        require(!paymentReleased, "Payment already released");
+        contractState = ContractState.Verified;
+        paymentReleased = true;
+        payable(jobPoster).transfer(specifiedPaymentAmount);
+        contractState = ContractState.PaymentDone ;
+        emit PaymentReleased(jobSolver, specifiedPaymentAmount);
     }
 }
 
