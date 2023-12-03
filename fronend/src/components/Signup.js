@@ -35,10 +35,10 @@ function Signup({ setView, ...props }) {
   // set initial state for values variable using useState hook
   const [values, setValues] = React.useState({
     email: "", // set email property to an empty string
-    password: "", // set password property to an empty string
+    //password: "", // set password property to an empty string
   });
   // set initial state for showPassword variable using useState hook and set it to false
-  const [showPassword, setShowPassword] = React.useState(false);
+  //const [showPassword, setShowPassword] = React.useState(false);
 
   const [userInfo, setUserInfo] = React.useState(null);
 
@@ -49,33 +49,33 @@ function Signup({ setView, ...props }) {
   const [error, setError] = React.useState(false);
   // set initial state for errorMessage variable using useState hook and set it to an empty string
   const [errorMessage, setErrorMessage] = React.useState("");
-
   // define handleChange function to update values variable based on input type and value
   const handleChange = (type, event) => {
     // if (type === "password") {
     //   // update password property of values variable with event.target.value
     //   setValues({ ...values, password: event.target.value });
     // } else 
-    if (type === "password") {
-      // update password property of values variable with event.target.value
-      setValues({ ...values, password: event.target.value });
-    } else if (type === "email") {
+    // if (type === "password") {
+    //   // update password property of values variable with event.target.value
+    //   setValues({ ...values, password: event.target.value });
+    // } else 
+    if (type === "email") {
       // update email property of values variable with event.target.value
       setValues({ ...values, email: event.target.value });
     }
   };
 
   // define handleClickShowPassword function to toggle the visibility of the password
-  const handleClickShowPassword = () => {
-    // set showPassword variable to the opposite of its current state
-    setShowPassword(!showPassword);
-  };
+  // const handleClickShowPassword = () => {
+  //   // set showPassword variable to the opposite of its current state
+  //   setShowPassword(!showPassword);
+  // };
 
-  // define handleMouseDownPassword function to prevent default mouse down event
-  const handleMouseDownPassword = (event) => {
-    // prevent default mouse down event
-    event.preventDefault();
-  };
+  // // define handleMouseDownPassword function to prevent default mouse down event
+  // const handleMouseDownPassword = (event) => {
+  //   // prevent default mouse down event
+  //   event.preventDefault();
+  // };
 
   // define handleSignup function to handle signup process using axios module
   const handleSignup = () => {
@@ -97,16 +97,16 @@ function Signup({ setView, ...props }) {
         if (!isEmail(values.email))
           // set error message if email input is not valid
           setErrorMessage("The email you input is not a valid email address.");
-        else if (!isLength(values.password, { min: 8, max: 20 }))
-          // set error message if password length is not within range
-          setErrorMessage(
-            "The length of the password must be between 8 to 20."
-          );
-          else if (!isLength(values.password, { min: 1 }))
-          // set error message if password length is not within range
-          setErrorMessage(
-            "The length of the password must be between 8 to 20."
-          );
+        // else if (!isLength(values.password, { min: 8, max: 20 }))
+        //   // set error message if password length is not within range
+        //   setErrorMessage(
+        //     "The length of the password must be between 8 to 20."
+        //   );
+        //   else if (!isLength(values.password, { min: 1 }))
+        //   // set error message if password length is not within range
+        //   setErrorMessage(
+        //     "The length of the password must be between 8 to 20."
+        //   );
         // set error message if email has already been registered
         else setErrorMessage("The email address has already been registered!");
       });
@@ -124,7 +124,7 @@ function Signup({ setView, ...props }) {
       <Card style={{ height: "40%", width: "30%", padding: "1%" }}>
         <CardContent>
         {!userInfo &&<h3>Sign Up</h3>}
-        {userInfo &&<h3>Your address</h3>}
+        {userInfo &&<h3>Your address & 12-word Phrase</h3>}
           {/* create form control component for email input */}
           {!userInfo &&<FormControl sx={{ m: 1, width: "100%" }} variant="standard">
             <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
@@ -135,38 +135,15 @@ function Signup({ setView, ...props }) {
               }} // call handleChange function with type 'email' and event
             />
           </FormControl>}
-          {!userInfo &&<FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-            <InputLabel htmlFor="standard-adornment-password">
-              Password
-            </InputLabel>
-            <Input
-              id="standard-adornment-password"
-              type={showPassword ? "text" : "password"}
-              value={values.password}
-              onChange={(e) => {
-                handleChange("password", e);
-              }} // call handleChange function with type 'password' and event
-              endAdornment={
-                // add end adornment with an icon button to toggle password visibility
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword} // call handleClickShowPassword function
-                    onMouseDown={handleMouseDownPassword} // call handleMouseDownPassword function
-                  >
-                    {/*render different icon based on the state of showPassword variable*/}
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>}
+         
           {/* Show user information after successful signup */}
           {userInfo && (
             <div style={{ marginTop: "10%" }}>
-              <h5>Important! Please remember your pwd!</h5>
-              <h5>You will never get your pwd back if you forget.</h5>
+              <h5>Important! Please remember your 12-word seed phrase!</h5>
+              <h5>You will never get your phrase back if you forget.</h5>
               <p>Address: {userInfo.address}</p>
+              <p>Phrase: {userInfo.seedPhrase}</p>
+              <h5>You must inlude '-' betweens words when signing in.</h5>
             </div>
           )}
           {/* show error message when error state is true */}
@@ -205,5 +182,32 @@ function Signup({ setView, ...props }) {
     </div>
   );
 }
+
+// {!userInfo &&<FormControl sx={{ m: 1, width: "100%" }} variant="standard">
+// <InputLabel htmlFor="standard-adornment-password">
+//   Password
+// </InputLabel>
+// <Input
+//   id="standard-adornment-password"
+//   type={showPassword ? "text" : "password"}
+//   value={values.password}
+//   onChange={(e) => {
+//     handleChange("password", e);
+//   }} // call handleChange function with type 'password' and event
+//   endAdornment={
+//     // add end adornment with an icon button to toggle password visibility
+//     <InputAdornment position="end">
+//       <IconButton
+//         aria-label="toggle password visibility"
+//         onClick={handleClickShowPassword} // call handleClickShowPassword function
+//         onMouseDown={handleMouseDownPassword} // call handleMouseDownPassword function
+//       >
+//         {/*render different icon based on the state of showPassword variable*/}
+//         {showPassword ? <VisibilityOff /> : <Visibility />}
+//       </IconButton>
+//     </InputAdornment>
+//   }
+// />
+// </FormControl>}
 
 export default Signup;

@@ -139,7 +139,7 @@ function Login({ setView, setTabValue, setisLogged, ...props }) {
           </FormControl>
           <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
             <InputLabel htmlFor="standard-adornment-privateKey">
-              Password or PrivateKey
+              Phrase or PrivateKey
             </InputLabel>
             <Input
               id="standard-adornment-privateKey"

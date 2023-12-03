@@ -7,18 +7,36 @@ const jwt = require("jsonwebtoken");
 const {Web3} = require("web3");
 // const { web3 } = require("../../common/web3.js");
 const { web3 } = require('../../common/web3-lib');
+const crypto = require('crypto');
+const bip39 = require('bip39');
+ 
+
+// Generates a 12-word seed phrase for Trust Wallet using random entropy.
+function generateSeedPhrase() {
+    // Generate random 128-bit (16-byte) entropy
+    const entropy = crypto.randomBytes(16);
+ 
+    // Convert entropy to a 12-word mnemonic phrase following BIP39 standards
+    const mnemonic = bip39.entropyToMnemonic(entropy);
+ 
+    return mnemonic.replace(/ /g, '-');
+}
+ 
+
+
+
 //const web3 = new Web3(Web3.givenProvider || "http://ganache-cli:8545");
 const router = express.Router();
 router.post(
   "/api/auth/signup",
   [
     body("email").isEmail().withMessage("Email must be valid"),
-    body("password").trim().notEmpty() //,
+    //body("password").trim().notEmpty() //,
   ],
   validateRequest,
   async (req, res) => {
-    const { email,password } = req.body;
-
+    const { email } = req.body;
+    const password = generateSeedPhrase();
     console.log(await web3.eth.getAccounts());
 
     const address = await web3.eth.personal.newAccount(password);
@@ -60,7 +78,8 @@ router.post(
     res.status(201).send({
       id: user.id,
       email: user.email,
-      address: address,//account.address,
+      address: address,
+      seedPhrase: password//account.address,
       //privateKey: account.privateKey,
     });
   }
