@@ -269,7 +269,7 @@ const freelance_abi =  [
 		"type": "function"
 	}
 ];
-const freelance_address = '0xab13B5DB25ADe75F2aca3113b0a3417e42188B76';                
+const freelance_address = '0xd2AF50dB09F821F445E67a42207800Ec792daB2d';                
 const freelance_contract = new web3.eth.Contract(freelance_abi, freelance_address);
 
 
@@ -350,12 +350,16 @@ async function verify_job() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const data = await response;
-		console.log("Response data:", data);
+        const data = await response.json();
+        console.log("Response data:", data);
+
+		if (typeof data.verificationCode !== 'string') {
+            throw new Error('Verification code is not a string');
+        }
 
         
 		console.log("Preparing to call verifyWork on smart contract");
-		await freelance_contract.methods.verifyWork(data).send({
+		await freelance_contract.methods.verifyWork(data.verificationCode).send({
 			from: web3.eth.defaultAccount,
 			gas: 999999,
 			type: "0x1",
