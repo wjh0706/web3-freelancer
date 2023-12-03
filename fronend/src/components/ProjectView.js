@@ -1,6 +1,6 @@
 /**
  * Components: ProjectView
- * This component renders either the ProjectList or ProjectEdit component based on the value of 'view' state.
+ * This component renders either the ProjectList or ProjectDetail component based on the value of 'view' state.
  * Props:
  * setTabValue: a function to update the active tab value in the parent component
  * setisLogged: a function to update the login status in the parent component
@@ -13,7 +13,7 @@
 import * as React from "react";
 
 import ProjectList from "./ProjectList";
-import ProjectEdit from "./ProjectEdit";
+import ProjectDetail from "./ProjectDetail";
 import NewProject from "./NewProject";
 import SubmitProject from "./SubmitProject";
 import VerifyProject from "./VerifyProject";
@@ -21,6 +21,7 @@ import VerifyProject from "./VerifyProject";
 function ProjectView({ setTabValue, setisLogged }) {
   const [view, setView] = React.useState("projectList");
   const [project, setProject] = React.useState(null);
+  const [isCreatorOrVerifierOrSubmiter,setIsCreatorOrVerifierOrSubmiter] = React.useState(false)
 
   return (
     <>
@@ -28,16 +29,18 @@ function ProjectView({ setTabValue, setisLogged }) {
         <ProjectList
           setView={setView}
           setProject={setProject}
+          setIsCreatorOrVerifierOrSubmiter={setIsCreatorOrVerifierOrSubmiter}
           setTabValue={setTabValue}
           setisLogged={setisLogged}
         />
       )}
       {view === "projectEdit" && (
-        <ProjectEdit
+        <ProjectDetail
           setView={setView}
           project={project}
           setProject={setProject}
           setisLogged={setisLogged}
+          isCreatorOrVerifierOrSubmiter={isCreatorOrVerifierOrSubmiter}
         />
       )}
       {view === "newProject" && (

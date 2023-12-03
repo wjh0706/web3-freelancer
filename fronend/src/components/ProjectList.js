@@ -18,19 +18,17 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import Input from "@mui/material/Input";
-import InputLabel from "@mui/material/InputLabel";
 import ProjectCard from "./ProjectCard";
-import yaml from "js-yaml";
 
 const axios = require("axios").default;
 
-function ProjectList({ setView, setTabValue, setProject, ...props }) {
+function ProjectList({ setView, setIsCreatorOrVerifierOrSubmiter, setTabValue, setProject, ...props }) {
   // Define state variables numProjects, email, and projectName using React.useState()
   const [numProjects, setNumProjects] = React.useState([]);
   const [email, setEmail] = React.useState("");
+  const [address, setAddress] = React.useState("");
   const [projectName, setProjectName] = React.useState("");
+  const [balance, setBalance] = React.useState(0);
 
   // Get the current user's email using a GET request to the '/api/auth/user/' endpoint
   React.useEffect(() => {
@@ -41,6 +39,8 @@ function ProjectList({ setView, setTabValue, setProject, ...props }) {
     })
       .then((res) => {
         setEmail(res.data.currentUser.email);
+        setAddress(res.data.currentUser.address)
+        setBalance(res.data.balanceEth)
       })
       .catch((err) => {
         console.log(err);
@@ -73,6 +73,8 @@ function ProjectList({ setView, setTabValue, setProject, ...props }) {
       <div>
         <div>
           <h3 style={{ margin: 16 }}>{"Welcome, " + email + "!"}</h3>
+          <h3 style={{ margin: 16 }}>{"Your address is " + address + "!"}</h3>
+          <h3 style={{ margin: 16 }}>{"Your balance is " + balance.toString() + " ETH !"}</h3>
         </div>
         <Button
           variant="contained"
@@ -81,7 +83,7 @@ function ProjectList({ setView, setTabValue, setProject, ...props }) {
           }}
           onClick={handleAddProject}
         >
-          New Project
+          Create Job
         </Button>
       </div>
       {/* display the list of projects */}
@@ -103,6 +105,7 @@ function ProjectList({ setView, setTabValue, setProject, ...props }) {
                 value={value}
                 setProject={setProject}
                 setNumProjects={setNumProjects}
+                setIsCreatorOrVerifierOrSubmiter = {setIsCreatorOrVerifierOrSubmiter}
               />
             ))}
         </Grid>

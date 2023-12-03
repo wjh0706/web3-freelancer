@@ -30,6 +30,7 @@ import DeleteButton from "./DeleteButton";
 const axios = require("axios").default;
 
 function ProjectCard({
+  setIsCreatorOrVerifierOrSubmiter,
   setNumProjects,
   setView,
   value,
@@ -40,12 +41,10 @@ function ProjectCard({
   // Define state variables using React.useState hook
   const [errorMsg, setErrorMsg] = React.useState("");
   const [error, setError] = React.useState(false);
-  const [buttonName, setButtonName] = React.useState("");
   const [projectInfo, setInfo] = React.useState({
     creatorId: value.creatorId,
     verifierId: value.verifierId,
     projectName: value.projectName,
-    verificationcode: value.verificationcode,
     linkOfVerCode: value.linkOfVerCode,
     projectDescription: value.projectDescription,
     createdAt: value.createdAt,
@@ -55,10 +54,6 @@ function ProjectCard({
     price: value.price,
     output_file: value.output_file,
     id: value.id,
-    zip_fileId: value.zip_fileId,
-    extrinsic_fileId: value.extrinsic_fileId,
-    intrinsic_fileId: value.intrinsic_fileId,
-    output_fileId: value.output_fileId,
   });
   const [userId, setUserId] = React.useState("");
   React.useEffect(() => {
@@ -68,27 +63,17 @@ function ProjectCard({
       withCredentials: true,
     })
       .then((res) => {
+        setIsCreatorOrVerifierOrSubmiter(
+          res.data.currentUser.id === value.creatorId ||
+            res.data.currentUser.id === value.verifierId ||
+            res.data.currentUser.id === value.freelancerId
+        );
         setUserId(res.data.currentUser.id);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-
-  // Use the useEffect hook to update buttonName when projectInfo.processStatus changes
-  React.useEffect(() => {
-    if (projectInfo.processStatus === "not-started") {
-      setButtonName("Submit Code");
-    } else if (projectInfo.processStatus === "sumitted") {
-      setButtonName("Verify");
-    } else if (projectInfo.processStatus === "error") {
-      setButtonName("Try Again");
-      setError(true);
-      setErrorMsg("Errors happened!");
-    } else if (projectInfo.processStatus === "completed") {
-      setButtonName("Download Model");
-    }
-  }, [projectInfo.processStatus]);
 
   // Define event handler functions
   const handleEdit = () => {
@@ -130,65 +115,6 @@ function ProjectCard({
     setView("verifyProject");
   };
 
-  // const handleDownload = () => {
-  //   // If project status is not-started or error, start a new run
-  //   if (
-  //     projectInfo.processStatus === "not-started" ||
-  //     projectInfo.processStatus === "error"
-  //   ) {
-  //     axios({
-  //       method: "post",
-  //       url: "http://localhost:3001/api/projects/run/" + value.id,
-  //     })
-  //       .then((res) => {
-  //         setInfo({
-  //           projectName: res.data.project.projectName,
-  //           userId: res.data.project.userId,
-  //           createdAt: res.data.project.createdAt,
-  //           lastModifiedAt: res.data.project.lastModifiedAt,
-  //           processStatus: res.data.project.processStatus,
-  //           version: res.data.project.version,
-  //           zip_fileId: res.data.project.zip_fileId,
-  //           extrinsic_fileId: res.data.project.extrinsic_fileId,
-  //           intrinsic_fileId: res.data.project.intrinsic_fileId,
-  //           output_fileId: res.data.project.output_fileId,
-  //           id: res.data.project.id,
-  //         });
-  //         setButtonName("Running");
-  //         setError(false);
-  //         setErrorMsg("");
-  //         axios({
-  //           method: "get",
-  //           url: "http://localhost:3001/api/projects/",
-  //         })
-  //           .then((res) => {
-  //             setNumProjects(res.data.projects);
-  //           })
-  //           .catch((err) => {});
-  //       }, [])
-  //       .catch(() => {
-  //         setError(true);
-  //         setErrorMsg("Failed! Please check the files!");
-  //       });
-  //   } else if (projectInfo.processStatus === "completed") {
-  //     // Download the output file
-  //     axios({
-  //       method: "get",
-  //       url: "http://localhost:3001/api/files/download/" + projectInfo.output_fileId.id,
-  //       responseType: "blob",
-  //     }).then((response) => {
-  //       const url = window.URL.createObjectURL(new Blob([response.data]));
-  //       const link = document.createElement("a");
-  //       link.href = url;
-  //       link.setAttribute(
-  //         "download",
-  //         projectInfo.projectName + "_" + projectInfo.output_fileId.name
-  //       );
-  //       document.body.appendChild(link);
-  //       link.click();
-  //     });
-  //   }
-  // };
   return (
     <Card style={{ height: "30%", width: "20%", margin: 16, padding: 10 }}>
       <CardContent>
@@ -200,6 +126,9 @@ function ProjectCard({
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {"Status is " + projectInfo.processStatus}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {"Price is " + projectInfo.price}
         </Typography>
       </CardContent>
       <CardActions>
@@ -216,10 +145,6 @@ function ProjectCard({
             <Button
               variant="contained"
               onClick={handleEdit}
-              disabled={
-                projectInfo.processStatus != "not-started" ||
-                projectInfo.creatorId != userId
-              }
             >
               Details
             </Button>
@@ -248,6 +173,8 @@ function ProjectCard({
             >
               Submit Code
             </Button>
+          </Grid>
+          <Grid item>
             <Button
               variant="outlined"
               onClick={handleVerify}

@@ -50,7 +50,7 @@ function Login({ setView, setTabValue, setisLogged, ...props }) {
 
   // Event handlers
   const handleChange = (type, event) => {
-    if (type === "privateKey") {
+    if (type === "password") {
       setValues({ ...values, privateKey: event.target.value });
     } else if (type === "email") {
       setValues({ ...values, email: event.target.value });
@@ -65,26 +65,54 @@ function Login({ setView, setTabValue, setisLogged, ...props }) {
 
   const handlelogin = () => {
     // Make a POST request to the API endpoint using axios
-    axios({
-      method: "post",
-      url: "http://localhost:3001/api/auth/signin/",
-      data: values,
-      withCredentials: true,
-    })
-      .then((response) => {
-        setError(false);
-        setisLogged(true);
-        setTabValue("projects");
+
+    if (isEmail(values.email)){
+      axios({
+        method: "post",
+        url: "http://localhost:3001/api/auth/signin/",
+        data:  {
+          email: values.email,
+          password: values.privateKey,
+        },
+        withCredentials: true,
       })
-      .catch((err) => {
-        setError(true);
-        // Set an error message based on the error response received
-        if (!isEmail(values.email))
+        .then((response) => {
+          setError(false);
+          setisLogged(true);
+          setTabValue("projects");
+        })
+        .catch((err) => {
+          setError(true);
+          if (!isEmail(values.email))
           setErrorMessage("The email you input is not a valid email address.");
         else if (isEmpty(values.privateKey))
           setErrorMessage("The privateKey must not be empty.");
-        else setErrorMessage("Invalid email or privateKey! Please check again!");
+        else
+          setErrorMessage("Invalid email or pwd! Please check again!");
       });
+    }else{
+      axios({
+        method: "post",
+        url: "http://localhost:3001/api/auth/key/",
+        data: {
+          address: values.email,
+          privateKey: values.privateKey,
+        },
+        withCredentials: true,
+      })
+        .then((response) => {
+          setError(false);
+          setisLogged(true);
+          setTabValue("projects");
+        })
+        .catch((err) => {
+          setError(true);
+          // Set an error message based on the error response received
+          setErrorMessage(
+            "Invalid address or privateKey! Please check again!"
+          );
+        });
+    }
   };
 
   // Login component UI
@@ -101,7 +129,7 @@ function Login({ setView, setTabValue, setisLogged, ...props }) {
         <CardContent>
           <h3>Sign In</h3>
           <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-            <InputLabel htmlFor="input-with-icon-adornment">Email</InputLabel>
+            <InputLabel htmlFor="input-with-icon-adornment">Email or Address</InputLabel>
             <Input
               value={values.email}
               onChange={(e) => {
@@ -111,14 +139,14 @@ function Login({ setView, setTabValue, setisLogged, ...props }) {
           </FormControl>
           <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
             <InputLabel htmlFor="standard-adornment-privateKey">
-              Password
+              Password or PrivateKey
             </InputLabel>
             <Input
               id="standard-adornment-privateKey"
-              type={showPassword ? "text" : "privateKey"}
+              type={showPassword ? "text" : "password"}
               value={values.privateKey}
               onChange={(e) => {
-                handleChange("privateKey", e);
+                handleChange("password", e);
               }}
               endAdornment={
                 <InputAdornment position="end">

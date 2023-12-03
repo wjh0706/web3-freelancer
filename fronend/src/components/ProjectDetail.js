@@ -1,5 +1,5 @@
 /**
- * Components: ProjectEdit
+ * Components: ProjectDetail
  * A component for editing project information, including project name, file management, settings, and deleting the project.
  * Props:
  * setView: A function to switch views.
@@ -28,17 +28,16 @@ import FilledInput from "@mui/material/FilledInput";
 import isEmpty from "validator/lib/isEmpty";
 import Alert from "@mui/material/Alert";
 import DeleteButton from "./DeleteButton";
-import FileManager from "./FileManager";
 import Help from "./Help";
 import BackButton from "./BackButton";
-import SettingManager from "./SettingManager";
+import Typography from "@mui/material/Typography";
 
 const axios = require("axios").default;
 //You may want to change the path of the markdown file you want to dispaly in the Help dialog.
 const helpMarkDown =
   "https://raw.githubusercontent.com/wjh0706/web3-freelancer/main/README.md";
 
-function ProjectEdit({ setView, project, setProject, setisLogged, ...props }) {
+function ProjectDetail({ isCreatorOrVerifierOrSubmiter, setView, project, setProject, setisLogged, ...props }) {
   const [info, setInfo] = React.useState(project);
   const [error, setError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -66,15 +65,6 @@ function ProjectEdit({ setView, project, setProject, setisLogged, ...props }) {
       });
   };
 
-  const handleChange = (type, event) => {
-    if (type === "name") {
-      // check if the event is for changing project name
-      setError(!event.target.value && error); // set error flag if project name is empty
-      setInfo({ ...info, projectName: event.target.value }); // update project name in local state
-      setIsSafed(event.target.value === project.projectName); // set the saved flag based on whether the project name is the same as the original project name
-    }
-  };
-
   const handleDelete = () => {
     axios({
       method: "delete",
@@ -86,7 +76,7 @@ function ProjectEdit({ setView, project, setProject, setisLogged, ...props }) {
     });
   };
 
-  // Render the ProjectEdit component
+  // Render the ProjectDetail component
   return (
     <div>
       <Stack spacing={2} style={{ margin: 16 }}>
@@ -98,39 +88,26 @@ function ProjectEdit({ setView, project, setProject, setisLogged, ...props }) {
           spacing={3}
         >
           <Grid item>
-            {/* Project name form control */}
-            <FormControl variant="filled" width="80%">
-              <InputLabel htmlFor="filled-adornment-project-name">
-                Project Name:
-              </InputLabel>
-              <FilledInput
-                id="filled-adornment-project-name"
-                startAdornment={
-                  <InputAdornment position="start"></InputAdornment>
-                }
-                value={info.projectName}
-                onChange={(e) => {
-                  handleChange("name", e);
-                }}
-              ></FilledInput>
-            </FormControl>
-          </Grid>
-          <Grid item>
-            {/* Save project name button */}
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleSave}
-              sx={{ m: 1 }}
-              margin="16"
-            >
-              Save Name
-            </Button>
             {/* Help button */}
             <Help helpMarkDown={helpMarkDown} />
           </Grid>
         </Grid>
         {error && <Alert severity="error">{errorMessage}</Alert>}
+
+        <Grid container spacing={1} justifyContent="center" alignItems="center">
+          {/* Display other project details as needed */}
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6">Project Details</Typography>
+            <Typography>Contract Address: {info.contractAddress}</Typography>
+            <Typography>Link of Verification Code: {info.linkOfVerCode}</Typography>
+            <Typography>Project Description: {info.projectDescription}</Typography>
+            <Typography>Created At: {info.createdAt}</Typography>
+            <Typography>Process Status: {info.processStatus}</Typography>
+            <Typography>Price: {info.price}</Typography>
+            {isCreatorOrVerifierOrSubmiter && <Typography>Output File: {info.output_file || 'Not submitted'}</Typography>}
+            {!isCreatorOrVerifierOrSubmiter && <Typography>You have no permission to see the output file.</Typography>}
+          </Grid>
+        </Grid>
 
         <Grid
           container
@@ -139,26 +116,6 @@ function ProjectEdit({ setView, project, setProject, setisLogged, ...props }) {
           justifyContent="center"
           alignItems="center"
         >
-          {/* Zip File Manager*/}
-          <FileManager
-            info={info}
-            fileType={"zip"}
-            format={".zip"}
-          ></FileManager>
-          {/* Intrinsic File Manager*/}
-          <FileManager
-            info={info}
-            fileType={"intrinsic"}
-            format={".yml"}
-          ></FileManager>
-          {/* Extrinsic File Manager*/}
-          <FileManager
-            info={info}
-            fileType={"extrinsic"}
-            format={".yml"}
-          ></FileManager>
-          {/* Setting Manager*/}
-          <SettingManager info={info}></SettingManager>
         </Grid>
         <Grid
           container
@@ -168,7 +125,7 @@ function ProjectEdit({ setView, project, setProject, setisLogged, ...props }) {
           margin={16}
           spacing={1.5}
         >
-          {/* Delete Project Button*/}
+          {/* Delete Job Button*/}
           <Grid item>
             <DeleteButton
               onDelete={handleDelete}
@@ -176,7 +133,7 @@ function ProjectEdit({ setView, project, setProject, setisLogged, ...props }) {
               deletedThing="project"
               marginVar={0}
               size="large"
-              buttonName="Delete Project"
+              buttonName="Delete Job"
             ></DeleteButton>
           </Grid>
           {/* Back Button*/}
@@ -186,4 +143,4 @@ function ProjectEdit({ setView, project, setProject, setisLogged, ...props }) {
     </div>
   );
 }
-export default ProjectEdit;
+export default ProjectDetail;
