@@ -29,17 +29,17 @@ services:
     networks:
       - mynetwork
 
-  # frontend:
-  #   image: frontend
-  #   container_name: frontend-depl
-  #   ports:
-  #     - 3000:3000 # Use the default React development port
-  #   depends_on:
-  #     - backend
-  #   environment:
-  #     - BACKEND=http://backend:3001
-  #   networks:
-  #     - mynetwork
+  frontend:
+    image: frontend
+    container_name: frontend-depl
+    ports:
+      - 80:3000 # Use the default React development port
+    depends_on:
+      - backend
+    environment:
+      - BACKEND=http://backend:3001
+    networks:
+      - mynetwork
 
 networks:
   mynetwork:
