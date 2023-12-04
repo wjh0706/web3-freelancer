@@ -143,7 +143,7 @@ function Signup({ setView, ...props }) {
               <h5>You will never get your phrase back if you forget.</h5>
               <p>Address: {userInfo.address}</p>
               <p>Phrase: {userInfo.seedPhrase}</p>
-              <h5>You must inlude '-' betweens words when signing in.</h5>
+              <h5>You must inlude ' 'aka space between words when signing in.</h5>
             </div>
           )}
           {/* show error message when error state is true */}

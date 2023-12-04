@@ -61,54 +61,54 @@ router.post(
     }
 );
 
-router.post(
-    '/api/auth/key',
-    [
-        body('address').trim().notEmpty(),
-        body('privateKey').trim().notEmpty().withMessage('You must supply a key'),
-    ],
-    validateRequest,
-    async (req, res) => {
-        const { address, privateKey } = req.body;
+// router.post(
+//     '/api/auth/key',
+//     [
+//         body('address').trim().notEmpty(),
+//         body('privateKey').trim().notEmpty().withMessage('You must supply a key'),
+//     ],
+//     validateRequest,
+//     async (req, res) => {
+//         const { address, privateKey } = req.body;
 
-        const existingUser = await User.findOne({
-            address,
-        });
-        if (!existingUser) {
-            throw new BadRequestError('No user associated with that address has been found');
-        }
+//         const existingUser = await User.findOne({
+//             address,
+//         });
+//         if (!existingUser) {
+//             throw new BadRequestError('No user associated with that address has been found');
+//         }
 
-        async function verifyAddressAndPrivateKey(address, privateKey) {
-            try {
-                const recoveredAddress = web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                return address.toLowerCase() === recoveredAddress.toLowerCase();
-            } catch (error) {
-                console.error('Error:', error);
-                return false;
-            }
-        }
+//         async function verifyAddressAndPrivateKey(address, privateKey) {
+//             try {
+//                 const recoveredAddress = web3.eth.accounts.privateKeyToAccount(privateKey).address;
+//                 return address.toLowerCase() === recoveredAddress.toLowerCase();
+//             } catch (error) {
+//                 console.error('Error:', error);
+//                 return false;
+//             }
+//         }
 
-        const passwordMatch = await verifyAddressAndPrivateKey(existingUser.address, privateKey);
-        if (!passwordMatch) {
-            throw new BadRequestError('Invalid Credentials');
-        }
+//         const passwordMatch = await verifyAddressAndPrivateKey(existingUser.address, privateKey);
+//         if (!passwordMatch) {
+//             throw new BadRequestError('Invalid Credentials');
+//         }
 
 
-        const JWT = jwt.sign(
-            {
-                id: existingUser.id,
-                email: existingUser.email,
-                address: existingUser.address,
-            },
-            process.env.JWT_KEY
-        );
+//         const JWT = jwt.sign(
+//             {
+//                 id: existingUser.id,
+//                 email: existingUser.email,
+//                 address: existingUser.address,
+//             },
+//             process.env.JWT_KEY
+//         );
 
-        req.session = {
-            jwt: JWT,
-        };
+//         req.session = {
+//             jwt: JWT,
+//         };
 
-        res.status(200).send(existingUser);
-    }
-);
+//         res.status(200).send(existingUser);
+//     }
+// );
 
 module.exports = { SingInRouter: router };
