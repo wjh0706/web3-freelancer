@@ -19,7 +19,7 @@ function generateSeedPhrase() {
     // Convert entropy to a 12-word mnemonic phrase following BIP39 standards
     const mnemonic = bip39.entropyToMnemonic(entropy);
  
-    return mnemonic.replace(/ /g, '-');
+    return mnemonic//.replace(/ /g, '-');
 }
  
 

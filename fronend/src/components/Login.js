@@ -65,8 +65,6 @@ function Login({ setView, setTabValue, setisLogged, ...props }) {
 
   const handlelogin = () => {
     // Make a POST request to the API endpoint using axios
-
-    if (isEmail(values.email)){
       axios({
         method: "post",
         url: "http://localhost:3001/api/auth/signin/",
@@ -90,29 +88,6 @@ function Login({ setView, setTabValue, setisLogged, ...props }) {
         else
           setErrorMessage("Invalid email or pwd! Please check again!");
       });
-    }else{
-      axios({
-        method: "post",
-        url: "http://localhost:3001/api/auth/key/",
-        data: {
-          address: values.email,
-          privateKey: values.privateKey,
-        },
-        withCredentials: true,
-      })
-        .then((response) => {
-          setError(false);
-          setisLogged(true);
-          setTabValue("projects");
-        })
-        .catch((err) => {
-          setError(true);
-          // Set an error message based on the error response received
-          setErrorMessage(
-            "Invalid address or privateKey! Please check again!"
-          );
-        });
-    }
   };
 
   // Login component UI
@@ -129,7 +104,7 @@ function Login({ setView, setTabValue, setisLogged, ...props }) {
         <CardContent>
           <h3>Sign In</h3>
           <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-            <InputLabel htmlFor="input-with-icon-adornment">Email or Address</InputLabel>
+            <InputLabel htmlFor="input-with-icon-adornment">Email</InputLabel>
             <Input
               value={values.email}
               onChange={(e) => {
@@ -139,7 +114,7 @@ function Login({ setView, setTabValue, setisLogged, ...props }) {
           </FormControl>
           <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
             <InputLabel htmlFor="standard-adornment-privateKey">
-              Phrase or PrivateKey
+              12-word Seed Phrase Including the Space
             </InputLabel>
             <Input
               id="standard-adornment-privateKey"

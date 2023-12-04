@@ -124,17 +124,6 @@ function ProjectDetail({ isCreatorOrVerifierOrSubmiter, setView, project, setPro
           margin={16}
           spacing={1.5}
         >
-          {/* Delete Job Button*/}
-          <Grid item>
-            <DeleteButton
-              onDelete={handleDelete}
-              isDisabled={info.processStatus === "running"}
-              deletedThing="project"
-              marginVar={0}
-              size="large"
-              buttonName="Delete Job"
-            ></DeleteButton>
-          </Grid>
           {/* Back Button*/}
           <BackButton setView={setView} isSafed={isSafed}></BackButton>
         </Grid>
