@@ -99,12 +99,11 @@ function ProjectDetail({ isCreatorOrVerifierOrSubmiter, setView, project, setPro
           <Grid item xs={12} md={6}>
             <Typography variant="h6">Project Details</Typography>
             <Typography>Contract Address: {info.contractAddress}</Typography>
-            <Typography>Link of Verification Code: {info.linkOfVerCode}</Typography>
             <Typography>Project Description: {info.projectDescription}</Typography>
             <Typography>Created At: {info.createdAt}</Typography>
             <Typography>Process Status: {info.processStatus}</Typography>
-            <Typography>Price: {info.price}</Typography>
-            {isCreatorOrVerifierOrSubmiter && <Typography>Output File: {info.output_file || 'Not submitted'}</Typography>}
+            <Typography>Price: {info.price} ETH</Typography>
+            {isCreatorOrVerifierOrSubmiter && <Typography>Output File: {info.submittedCode || 'Not submitted'}</Typography>}
             {!isCreatorOrVerifierOrSubmiter && <Typography>You have no permission to see the output file.</Typography>}
           </Grid>
         </Grid>

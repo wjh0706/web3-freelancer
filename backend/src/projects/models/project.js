@@ -26,7 +26,7 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    linkOfVerCode: {
+    posterCode: {
       type: String,
       required: true,
     },
@@ -55,7 +55,7 @@ const projectSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    output_file: {
+    submittedCode: {
       type: String,
       required: false,
     },

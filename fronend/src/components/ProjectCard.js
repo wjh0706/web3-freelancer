@@ -45,14 +45,14 @@ function ProjectCard({
     creatorId: value.creatorId,
     verifierId: value.verifierId,
     projectName: value.projectName,
-    linkOfVerCode: value.linkOfVerCode,
+    posterCode: value.posterCode,
     projectDescription: value.projectDescription,
     createdAt: value.createdAt,
     lastModifiedAt: value.lastModifiedAt,
     processStatus: value.processStatus,
     version: value.version,
     price: value.price,
-    output_file: value.output_file,
+    submittedCode: value.submittedCode,
     id: value.id,
   });
   const [userId, setUserId] = React.useState("");
@@ -128,7 +128,7 @@ function ProjectCard({
           {"Status is " + projectInfo.processStatus}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {"Price is " + projectInfo.price}
+          {"Price is " + projectInfo.price + " ETH"}
         </Typography>
       </CardContent>
       <CardActions>

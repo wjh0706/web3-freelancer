@@ -22,7 +22,7 @@ const SubmitProject = ({ projectId, setView }) => {
       // Make a PUT request to the API endpoint
       const response = await axios.put(
         `http://localhost:3001/api/projects/submit/${projectId}`,
-        { output_file: outputFile },
+        { submittedCode: outputFile },
         {
           withCredentials: true, // Include this line for credentials
         }
@@ -43,9 +43,11 @@ const SubmitProject = ({ projectId, setView }) => {
         <h2>Submit Job</h2>
         <Typography variant="h6">Submission File Link</Typography>
         <TextField
-          label="Submission File Link"
+          label="Your Code for Submission"
           variant="outlined"
           fullWidth
+          multiline
+          rows={6}
           value={outputFile}
           margin="normal"
           onChange={handleFileChange}

@@ -37,9 +37,11 @@ router.post(
       projectDescription,
       price,
       verificationCode,
-      linkOfVerCode,
+      posterCode,
     } = req.body;
     // const verificationCode = uuidv4();
+
+    const weiAmount = web3.utils.toWei(price, 'ether');
 
     const verifier = await User.findOne({
       email: verifierEmail,
@@ -69,13 +71,11 @@ router.post(
       creatorId: req.currentUser.id,
       verifierId: verifier.id,
       price: price,
-      linkOfVerCode: linkOfVerCode,
+      posterCode: posterCode,
       contractAddress: contractAddress,
       projectDescription: projectDescription,
       createdAt: new Date(),
     });
-
-    await project.save();
 
     // Save the verification code to a JSON file
     // const verificationCodeData = { verification_code: verificationCode };
@@ -84,7 +84,7 @@ router.post(
     //   JSON.stringify(verificationCodeData, null, 4)
     // );
 
-    const uintValue = parseInt(price, 10);
+    const uintValue = parseInt(weiAmount, 10);
 
     // Log the info for debugging
     console.log(uintValue, verificationCode, req.currentUser.address);
@@ -103,11 +103,12 @@ router.post(
         gas: 999999,
         type: "0x1",
       });
+      await project.save();
       console.log("Job posting successful");
     } catch (error) {
       console.error("Error in posting job:", error);
     }
-
+    console.log("ver code is ", verificationCode)
     res.status(201).send(project);
   }
 );

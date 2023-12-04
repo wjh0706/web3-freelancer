@@ -9,14 +9,8 @@ import Typography from "@mui/material/Typography";
 
 const VerifyProject = ({ projectId, setView }) => {
   const [verificationCode, setVerificationCode] = useState("");
-  const [isSafed, setIsSafed] = useState(true);
-  const handleCodeChange = (e) => {
-    setIsSafed(false);
-    setVerificationCode(e.target.value);
-  };
 
   const handleVerify = async () => {
-    setIsSafed(true);
     try {
       // Make a PUT request to the API endpoint
       const response = await axios.put(
@@ -39,15 +33,6 @@ const VerifyProject = ({ projectId, setView }) => {
     <Box m={2}>
       <div>
         <h2>Verify Job</h2>
-        <Typography variant="h6">Verification Code</Typography>
-        <TextField
-          label="Verification Code"
-          variant="outlined"
-          fullWidth
-          value={verificationCode}
-          margin="normal"
-          onChange={handleCodeChange}
-        />
         <br />
         <Grid container spacing={2} justifyContent="space-between">
           <Grid item xs={6}>
@@ -63,7 +48,7 @@ const VerifyProject = ({ projectId, setView }) => {
               Verify Job
             </Button>
           </Grid>
-          <BackButton setView={setView} isSafed={isSafed}></BackButton>
+          <BackButton setView={setView} isSafed={true}></BackButton>
         </Grid>
       </div>
     </Box>

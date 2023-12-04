@@ -9,7 +9,7 @@ const { web3, abi } = require("../../common/web3-lib");
 const router = express.Router();
 
 router.put("/api/projects/submit/:projectId", requireAuth, async (req, res) => {
-  const { output_file } = req.body;
+  const { submittedCode } = req.body;
 
   if (
     !req.params.projectId ||
@@ -33,13 +33,13 @@ router.put("/api/projects/submit/:projectId", requireAuth, async (req, res) => {
   const contract = new web3.eth.Contract(abi, project.contractAddress);
 
   project.freelancerId = req.currentUser.id;
-  await contract.methods.submitWork(output_file).send({
+  await contract.methods.submitWork(submittedCode).send({
     from: req.currentUser.address,
     gas: 999999,
     type: "0x1",
   });
   console.log("Job submission successful");
-  project.output_file = output_file;
+  project.submittedCode = submittedCode;
   project.set("processStatus", ProcessStatus.Submitted);
 
   await project.save();

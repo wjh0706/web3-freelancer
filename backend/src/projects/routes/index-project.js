@@ -16,7 +16,7 @@ router.get('/api/projects/:id', requireAuth, async (req, res) => {
     if (!project) {
         throw new BadRequestError('Project Not Found');
     }
-    project.populate('output_file');
+    project.populate('submittedCode');
 
     res.status(200).send({ project: project });
 });

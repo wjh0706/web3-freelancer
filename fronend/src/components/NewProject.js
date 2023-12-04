@@ -35,7 +35,7 @@ const NewProject = ({ setView }) => {
     verifierEmail: "", // Replace with actual verifierId from authentication
     projectName: "",
     projectDescription: "",
-    linkOfVerCode: "",
+    posterCode: "",
     verificationCode: "",
     price: 0,
   });
@@ -115,7 +115,6 @@ const NewProject = ({ setView }) => {
             name="verifierEmail"
             value={formData.verifierEmail}
             onChange={handleChange}
-            multiline
             variant="outlined"
             margin="normal"
             fullWidth
@@ -126,18 +125,18 @@ const NewProject = ({ setView }) => {
             name="verificationCode"
             value={formData.verificationCode}
             onChange={handleChange}
-            multiline
             variant="outlined"
             margin="normal"
             fullWidth
             required
           />
           <TextField
-            label="Link of the Verification Code"
-            name="linkOfVerCode"
-            value={formData.linkOfVerCode}
+            label="Test Code Provided by Job Poster"
+            name="posterCode"
+            value={formData.posterCode}
             onChange={handleChange}
             multiline
+            rows={6}
             variant="outlined"
             margin="normal"
             fullWidth
