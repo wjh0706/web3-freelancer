@@ -1,0 +1,45 @@
+version: '3'
+services:
+  ganache-cli:
+    image: trufflesuite/ganache-cli
+    ports:
+      - 8545:8545
+    networks:
+      - mynetwork
+
+  backend-mongo:
+    image: mongo
+    container_name: backend-mongo-depl
+    ports:
+      - 27017:27017
+    networks:
+      - mynetwork
+
+  backend:
+    image: backend
+    container_name: backend-depl
+    environment:
+      - MONGO_URI=mongodb://backend-mongo:27017/backend
+    ports:
+      - 3001:3001 # Choose a port that's available on your machine
+    depends_on:
+      - ganache-cli
+      - backend-mongo
+      
+    networks:
+      - mynetwork
+
+  frontend:
+    image: frontend
+    container_name: frontend-depl
+    ports:
+      - 80:3000 # Use the default React development port
+    depends_on:
+      - backend
+    environment:
+      - BACKEND=http://backend:3001
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
