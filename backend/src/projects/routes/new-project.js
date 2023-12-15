@@ -2,7 +2,7 @@ const express = require("express");
 const { requireAuth } = require("../../common/middleware/require-auth");
 const { validateRequest } = require("../../common/middleware/validate-request");
 const { BadRequestError } = require("../../common/errors/bad-request-error");
-const { v4: uuidv4 } = require("uuid");
+//const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const expressValidator = require("express-validator");
 const { Project } = require("../models/project");
@@ -66,7 +66,7 @@ router.post(
     console.log("Contract Address returned:", contractAddress);
     console.log("Account Address returned:", accountAddress);
 
-    const hashedVerCode = keccak256(verificationCode).toString('hex')
+    //const hashedVerCode = keccak256(verificationCode).toString('hex')
 
     const project = Project.build({
       projectName: projectName,
@@ -99,19 +99,19 @@ router.post(
         type: "0x1",
       });
 
-      // await contract.methods.postJob(verificationCode, uintValue).send({
-      //   from: req.currentUser.address,
-      //   value: uintValue,
-      //   gas: 999999,
-      //   type: "0x1",
-      // });
-
-      await contract.methods.postJob(hashedVerCode, uintValue).send({
+      await contract.methods.postJob(verificationCode, uintValue).send({
         from: req.currentUser.address,
         value: uintValue,
         gas: 999999,
         type: "0x1",
       });
+
+      // await contract.methods.postJob(hashedVerCode, uintValue).send({
+      //   from: req.currentUser.address,
+      //   value: uintValue,
+      //   gas: 999999,
+      //   type: "0x1",
+      // });
 
       await project.save();
       console.log("Job posting successful");
