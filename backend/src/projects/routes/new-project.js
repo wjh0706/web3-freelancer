@@ -66,6 +66,8 @@ router.post(
     console.log("Contract Address returned:", contractAddress);
     console.log("Account Address returned:", accountAddress);
 
+    const hashedVerCode = keccak256(verificationCode).toString('hex')
+
     const project = Project.build({
       projectName: projectName,
       creatorId: req.currentUser.id,
@@ -97,12 +99,20 @@ router.post(
         type: "0x1",
       });
 
-      await contract.methods.postJob(verificationCode, uintValue).send({
+      // await contract.methods.postJob(verificationCode, uintValue).send({
+      //   from: req.currentUser.address,
+      //   value: uintValue,
+      //   gas: 999999,
+      //   type: "0x1",
+      // });
+
+      await contract.methods.postJob(hashedVerCode, uintValue).send({
         from: req.currentUser.address,
         value: uintValue,
         gas: 999999,
         type: "0x1",
       });
+
       await project.save();
       console.log("Job posting successful");
     } catch (error) {

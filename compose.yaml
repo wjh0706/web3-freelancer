@@ -21,7 +21,7 @@ services:
     environment:
       - MONGO_URI=mongodb://backend-mongo:27017/backend
     ports:
-      - 3001:3001 # Choose a port that's available on your machine
+      - 3001:3001
     depends_on:
       - ganache-cli
       - backend-mongo
@@ -33,7 +33,7 @@ services:
     image: frontend
     container_name: frontend-depl
     ports:
-      - 80:3000 # Use the default React development port
+      - 80:3000
     depends_on:
       - backend
     environment:
