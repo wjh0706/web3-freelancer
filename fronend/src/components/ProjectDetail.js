@@ -31,13 +31,23 @@ import DeleteButton from "./DeleteButton";
 import Help from "./Help";
 import BackButton from "./BackButton";
 import Typography from "@mui/material/Typography";
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-python";
+import "ace-builds/src-noconflict/theme-github";
 
 const axios = require("axios").default;
 //You may want to change the path of the markdown file you want to dispaly in the Help dialog.
 const helpMarkDown =
   "https://raw.githubusercontent.com/wjh0706/web3-freelancer/main/README.md";
 
-function ProjectDetail({ isCreatorOrVerifierOrSubmiter, setView, project, setProject, setisLogged, ...props }) {
+function ProjectDetail({
+  isCreatorOrVerifierOrSubmiter,
+  setView,
+  project,
+  setProject,
+  setisLogged,
+  ...props
+}) {
   const [info, setInfo] = React.useState(project);
   const [error, setError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -99,12 +109,27 @@ function ProjectDetail({ isCreatorOrVerifierOrSubmiter, setView, project, setPro
           <Grid item xs={12} md={6}>
             <Typography variant="h6">Project Details</Typography>
             <Typography>Contract Address: {info.contractAddress}</Typography>
-            <Typography>Project Description: {info.projectDescription}</Typography>
+            <Typography>
+              Project Description: {info.projectDescription}
+            </Typography>
             <Typography>Created At: {info.createdAt}</Typography>
             <Typography>Process Status: {info.processStatus}</Typography>
             <Typography>Price: {info.price} ETH</Typography>
-            {isCreatorOrVerifierOrSubmiter && <Typography>Output File: {info.submittedCode || 'Not submitted'}</Typography>}
-            {!isCreatorOrVerifierOrSubmiter && <Typography>You have no permission to see the output file.</Typography>}
+            {isCreatorOrVerifierOrSubmiter && (
+              <AceEditor
+                mode="python"
+                theme="github"
+                value={info.submittedCode || "Not submitted"}
+                editorProps={{ $blockScrolling: false }}
+                style={{ width: "100%", height: "500px" }}
+                readOnly={true}
+              />
+            )}
+            {!isCreatorOrVerifierOrSubmiter && (
+              <Typography>
+                You have no permission to see the submission code.
+              </Typography>
+            )}
           </Grid>
         </Grid>
 
@@ -114,8 +139,7 @@ function ProjectDetail({ isCreatorOrVerifierOrSubmiter, setView, project, setPro
           style={{ display: "flex", direction: "column" }}
           justifyContent="center"
           alignItems="center"
-        >
-        </Grid>
+        ></Grid>
         <Grid
           container
           direction="row"
