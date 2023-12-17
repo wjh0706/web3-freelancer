@@ -17,7 +17,7 @@ const { projectDeleteRouter } = require('./src/projects/routes/delete-project');
 const { projectNewRouter } = require('./src/projects/routes/new-project');
 const { projectIndexRouter } = require('./src/projects/routes/index-project');
 const { submitProjectRouter } = require('./src/projects/routes/submit-project');
-const { projectUpdateRouter } = require('./src/projects/routes/update-project');
+// const { projectUpdateRouter } = require('./src/projects/routes/update-project');
 const { verifyProjectRouter } = require('./src/projects/routes/verify-project');
 
 const app = express();
@@ -45,7 +45,7 @@ app.use(projectDeleteRouter);
 app.use(projectNewRouter);
 app.use(projectIndexRouter);
 app.use(submitProjectRouter);
-app.use(projectUpdateRouter);
+// app.use(projectUpdateRouter);
 app.use(verifyProjectRouter);
 
 app.all('*', async () => {
