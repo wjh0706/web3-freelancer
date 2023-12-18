@@ -36,6 +36,24 @@ http://localhost:3000
 
 auth part: https://github.com/wjh0706/web3-auth
 
+For test part, we have our contract test under main_archive branch.
+To test the contract, use 
+```
+git checkout main_archive
+npm install -g truffle
+truffle test
+```
+For backend test, Since we integrated all deployment and auth part, its hard to do it automatically.
+Thus, we have set some manual test. Please follow directions for it.
+When you successully deploy the app, on the main webpage, you will use test0@email.com to test9@email.com as accounts.
+The passwords are generated using 12 phrase words which can be found in your terminal.
+It will be like this : 
+```
+Mnemonic:      police loan appear window tackle tennis person secret kidney hurdle object curious
+```
+The password will be : police loan appear window tackle tennis person secret kidney hurdle object curious
+with no space before first word and after last word, but spaces between words are required.
+
 
 Make sure to update the Ethereum node URL, contract JSON file path, and adjust the deployment and interaction process based on your application's requirements. 
 Also, consider implementing proper error handling and security measures based on your use case.
