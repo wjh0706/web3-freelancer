@@ -33,7 +33,7 @@ services:
     image: frontend
     container_name: frontend-depl
     ports:
-      - 81:3000
+      - 80:3000
     depends_on:
       - backend
     environment:
