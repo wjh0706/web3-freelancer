@@ -44,15 +44,41 @@ npm install -g truffle
 truffle test
 ```
 For backend test, Since we integrated all deployment and auth part, its hard to do it automatically.
+
 Thus, we have set some manual test. Please follow directions for it.
 When you successully deploy the app, on the main webpage, you will use test0@email.com to test9@email.com as accounts.
-The passwords are generated using 12 phrase words which can be found in your terminal.
+
+Due to the default settings of ganache, you can use any phrase to unlock the 10 test accounts. But if you signup new accounts, you must suuply the correct phrases.
+
 It will be like this : 
 ```
 Mnemonic:      police loan appear window tackle tennis person secret kidney hurdle object curious
 ```
-The password will be : police loan appear window tackle tennis person secret kidney hurdle object curious
+The password will something like : 
+```
+police loan appear window tackle tennis person secret kidney hurdle object curious
+```
 with no space before first word and after last word, but spaces between words are required.
+
+When creating a post job, you may enter arbitrary strings for project name and project description. 
+
+For verifier's email, it is always 
+```
+test1@email.com
+```
+For verification code, use the keccak256 link when you create a job poster.
+![keccak256](images/keccak256.png "verification code")
+
+Copy the test method under ./Testfiles/submitted_code.py with respoect to test number.
+![create_job](images/create_job.png "create job")
+
+Using a different account for job sumbitting. Simply copy the code from ./Testfiles/submitted_code.py with respected to test number.
+
+For verifying, login to test1@email.com. You will see all posted jobs. Those that have been submitted will have verify button avaliable for verifier to click. If the submitted code is correct. The job will be verified.
+
+If the submitted job fails. Clicking the verify button will has no response，but you can see logs on backend terminal about the submission does not meet requirement.
+
+When verifying posted jobs, do not click too many times or it may not response properly. 
 
 
 Make sure to update the Ethereum node URL, contract JSON file path, and adjust the deployment and interaction process based on your application's requirements. 
