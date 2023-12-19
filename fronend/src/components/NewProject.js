@@ -34,8 +34,8 @@ const NewProject = ({ setView }) => {
   }, []);
 
   const [formData, setFormData] = useState({
-    creatorId: creatorId, // Replace with actual creatorId from authentication
-    verifierEmail: "", // Replace with actual verifierId from authentication
+    creatorId: creatorId,
+    verifierEmail: "", 
     projectName: "",
     projectDescription: "",
     posterCode: "",
