@@ -6,14 +6,17 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
-import BackButton from './BackButton'
+import BackButton from "./BackButton";
 import Alert from "@mui/material/Alert";
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-python";
+import "ace-builds/src-noconflict/theme-github";
 
 const NewProject = ({ setView }) => {
   const [creatorId, setcreatorId] = React.useState("");
   const [isCreating, setIsCreating] = React.useState(false);
   const [isSafed, setIsSafed] = React.useState(true);
-  const [errMsg,setErrMsg] = React.useState("");
+  const [errMsg, setErrMsg] = React.useState("");
   const [balance, setBalance] = React.useState(0);
   React.useEffect(() => {
     axios({
@@ -22,7 +25,7 @@ const NewProject = ({ setView }) => {
       withCredentials: true,
     })
       .then((res) => {
-        setBalance(res.data.balanceEth)
+        setBalance(res.data.balanceEth);
         setcreatorId(res.data.currentUser.id);
       })
       .catch((err) => {
@@ -31,8 +34,8 @@ const NewProject = ({ setView }) => {
   }, []);
 
   const [formData, setFormData] = useState({
-    creatorId: creatorId, // Replace with actual creatorId from authentication
-    verifierEmail: "", // Replace with actual verifierId from authentication
+    creatorId: creatorId,
+    verifierEmail: "", 
     projectName: "",
     projectDescription: "",
     posterCode: "",
@@ -41,17 +44,21 @@ const NewProject = ({ setView }) => {
   });
 
   const handleChange = (e) => {
-    setIsSafed(false)
-    if(e.target.name === 'verifierEmail'){
-      setErrMsg("")
+    setIsSafed(false);
+    if (e.target.name === "verifierEmail") {
+      setErrMsg("");
     }
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const onChange = (newCode) => {
+    setFormData({ ...formData, ["posterCode"]: newCode });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsCreating(true);
-    setIsSafed(true)
+    setIsSafed(true);
 
     try {
       const response = await axios.post(
@@ -62,10 +69,10 @@ const NewProject = ({ setView }) => {
         }
       );
       console.log("Project created:", response.data);
-      setErrMsg("")
+      setErrMsg("");
       setView("projectList");
     } catch (error) {
-        setErrMsg('Invalid Verifier Email!')
+      setErrMsg("Invalid Verifier Email!");
 
       console.error("Error creating project:", error.message);
       // Add error handling logic or display an error message to the user
@@ -120,6 +127,8 @@ const NewProject = ({ setView }) => {
             fullWidth
             required
           />
+          <Typography variant="h6">Verification Code</Typography>
+          <p>Enter the hash of your verification code using keccak256 on <a href="https://emn178.github.io/online-tools/keccak_256.html" target="_blank" rel="noopener noreferrer">https://emn178.github.io/online-tools/keccak_256.html</a>. This ensures we cannot cheat using your code.</p>
           <TextField
             label="Verification Code"
             name="verificationCode"
@@ -130,17 +139,14 @@ const NewProject = ({ setView }) => {
             fullWidth
             required
           />
-          <TextField
-            label="Test Code Provided by Job Poster"
-            name="posterCode"
+          <Typography variant="h6">Test Code Provided by Job Poster</Typography>
+          <AceEditor
+            mode="python"
+            theme="github"
+            onChange={onChange}
             value={formData.posterCode}
-            onChange={handleChange}
-            multiline
-            rows={6}
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            required
+            editorProps={{ $blockScrolling: false }}
+            style={{ width: "100%", height: "500px" }}
           />
         </Box>
 

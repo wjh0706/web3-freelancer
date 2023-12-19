@@ -9,6 +9,7 @@ const { promisify } = require("util");
 const execAsync = promisify(require("child_process").exec);
 const fs = require("fs").promises;
 const path = require("path");
+const keccak256 = require('keccak256');
 
 const router = express.Router();
 
@@ -86,13 +87,23 @@ print(final_code)
     //console.log("End");
   }, 2000);
 
+
+
   try {
+
+    const hashedVerCode = keccak256(verificationCode).toString('hex')
     console.log("now using vercode", verificationCode);
-    await contract.methods.verifyWork(verificationCode).send({
+    await contract.methods.verifyWork(hashedVerCode).send({
       from: req.currentUser.address,
       gas: 999999,
       type: "0x1",
     });
+
+    // await contract.methods.verifyWork(verificationCode).send({
+    //   from: req.currentUser.address,
+    //   gas: 999999,
+    //   type: "0x1",
+    // });
     console.log("Job verification successful");
 
     // Update project status and save

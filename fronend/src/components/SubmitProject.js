@@ -6,14 +6,17 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import BackButton from "./BackButton";
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-python";
+import "ace-builds/src-noconflict/theme-github";
 
 const SubmitProject = ({ projectId, setView }) => {
   const [outputFile, setOutputFile] = useState("");
   const [isSafed, setIsSafed] = useState(true);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (code) => {
     setIsSafed(false);
-    setOutputFile(e.target.value);
+    setOutputFile(code);
   };
 
   const handleSubmit = async () => {
@@ -41,17 +44,15 @@ const SubmitProject = ({ projectId, setView }) => {
     <Box m={2}>
       <div>
         <h2>Submit Job</h2>
-        <Typography variant="h6">Submission File Link</Typography>
-        <TextField
-          label="Your Code for Submission"
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={6}
-          value={outputFile}
-          margin="normal"
-          onChange={handleFileChange}
-        />
+        <Typography variant="h6">Code of Submission</Typography>
+        <AceEditor
+            mode="python"
+            theme="github"
+            onChange={handleFileChange}
+            value={outputFile}
+            editorProps={{ $blockScrolling: false }}
+            style={{ width: "100%", height: "500px" }}
+          />
         <br />
         <Grid container spacing={2} justifyContent="space-between">
           <Grid item xs={6}>
